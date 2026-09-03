@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Langi Engine — Worldbuilder</title>
+<style>
+:root{--chrome:#25282d;--chrome2:#2d3137;--chrome3:#373c43;--line:#454b53;--text:#e9edf1;--muted:#9aa3ac;--canvas:#f6f7f8;--accent:#a9bdd6}
+*{box-sizing:border-box}
+html,body{width:100%;height:100%;margin:0;padding:0}
+body{overflow:hidden;background:var(--chrome);font:13px Inter,system-ui,-apple-system,Segoe UI,sans-serif;color:var(--text);min-width:0;min-height:0}
+#app{width:100%;height:100%;min-width:0;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer;color:inherit}
+.top{height:54px;flex:0 0 54px;min-height:54px;background:linear-gradient(#2c3035,#25292e);border-bottom:1px solid #14171a;display:flex;align-items:center;justify-content:space-between;padding:0 10px}
+.brand{display:flex;align-items:center;gap:10px}
+.mark{width:25px;height:25px;display:grid;place-items:center;border:1px solid #59616b;border-radius:7px;background:#32373d;font-weight:700}
+.name{font-weight:700}.name span{font-weight:400;color:#89929b}
+.tabs{display:flex;gap:2px;background:#1e2227;border:1px solid #3b4249;border-radius:8px;padding:2px}
+.tabs button{border:0;background:transparent;border-radius:6px;padding:7px 12px;color:#929ba4}
+.tabs button.active{background:#353a41;color:#eef1f4}
+.status{font-size:10px;color:#7d8790;margin-left:5px}
+.tools{display:flex;gap:5px}
+.tool{height:32px;padding:0 10px;border:1px solid #4a5159;background:#30353b;border-radius:7px}
+.tool:hover{background:#3a4047}
+.tool.primary{background:#59697e;border-color:#70839a}
+.tool:disabled{opacity:.35;cursor:default}
+.workspace{position:relative;flex:1 1 auto;height:auto;min-width:0;min-height:0;display:flex;overflow:hidden}
+.canvas-shell{display:flex;flex:1 1 auto;width:100%;height:100%;min-width:0;min-height:0;overflow:hidden}
+@media (max-width:900px){.inspector{width:320px;flex-basis:320px;min-width:320px;max-width:320px}.canvas{min-width:280px}}
+@media (max-width:700px){.top{padding:0 7px}.status{display:none}.tools .tool[data-act=export],.tools .tool[data-act=import]{display:none}.inspector{width:290px;flex-basis:290px;min-width:290px;max-width:290px}.canvas{min-width:240px}}
+.canvas{position:relative;flex:1 1 auto;width:0;min-width:0;min-height:0;height:100%;overflow:hidden;background:var(--canvas);touch-action:none}
+.canvas.connecting{cursor:crosshair}
+.grid{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(55,62,69,.075) 1px,transparent 1px),linear-gradient(90deg,rgba(55,62,69,.075) 1px,transparent 1px)}
+.world{position:absolute;left:0;top:0;transform-origin:0 0}
+.world svg{position:absolute;left:0;top:0;overflow:visible;pointer-events:none;z-index:1;width:10000px;height:10000px}
+.node{position:absolute;width:320px;z-index:2;background:#fff;color:#252a30;border:1px solid #d2d7dc;border-radius:10px;box-shadow:0 5px 16px rgba(20,25,30,.11),0 1px 2px rgba(20,25,30,.08);overflow:hidden;user-select:none}
+.node.selected{border-color:#788fa8;box-shadow:0 0 0 2px rgba(120,143,168,.22),0 8px 20px rgba(20,25,30,.14)}
+.head{height:40px;padding:0 11px;display:flex;align-items:center;gap:8px;background:#f8f9fa;border-bottom:1px solid #e4e7ea}
+.type{font-size:11px}
+.node-name{font-weight:650;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.badge{margin-left:auto;padding:2px 5px;border:1px solid #d9dde1;background:#f1f3f5;border-radius:5px;font-size:9px;color:#6d7680}
+.body{padding:10px}
+.desc{font-size:11px;line-height:1.5;color:#626b75;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.meta{margin-top:7px;color:#89929b;font-size:10px}
+.port{position:absolute;top:50%;width:11px;height:11px;margin-top:-5px;border-radius:50%;z-index:8;cursor:crosshair;box-shadow:0 0 0 2px rgba(255,255,255,.92),0 1px 3px rgba(0,0,0,.16)}
+.port.input{left:-6px;background:#e05252;border:2px solid #b62f2f}
+.port.output{right:-6px;background:#3c82da;border:2px solid #245da8}
+.port.output:hover,.port.input:hover{transform:scale(1.25)}
+.connection-preview{pointer-events:none;stroke:#49b77b;stroke-width:3;stroke-dasharray:7 6;fill:none;opacity:.9}
+.connection-line{pointer-events:none;stroke:#32a965;stroke-width:3.5;fill:none;filter:drop-shadow(0 1px 1px rgba(30,80,50,.18))}.connection-arrow{fill:#32a965}
+.connection-label{pointer-events:none;fill:#3e9f68;font-size:10px}
+.group{background:rgba(239,242,245,.66);border:1px dashed #a5aeb8;box-shadow:none}
+.group-title{position:absolute;left:12px;top:10px;font-weight:700;font-size:11px;color:#68727c}
+.block{margin-top:8px;padding:7px;border:1px solid #dfe3e7;background:#fafbfc;border-radius:7px}
+.block-title{font-size:9px;text-transform:uppercase;letter-spacing:.09em;color:#78818b;font-weight:700;margin-bottom:6px}
+.block table{width:100%;border-collapse:collapse}
+.block th,.block td{border:1px solid #e1e5e8;padding:4px 5px;font-size:10px;text-align:left}
+.bar-row{margin:5px 0}
+.bar-head{display:flex;justify-content:space-between;color:#747d86;font-size:9px;margin-bottom:3px}
+.bar-track{height:6px;background:#e5e8eb;border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;background:#9aaec4}
+.block img{display:block;width:100%;height:auto;max-height:none;object-fit:contain;border-radius:5px}.image-block{padding-bottom:8px}.image-block img{background:#eef1f4}
+.toolbar{position:absolute;top:10px;left:10px;z-index:20;display:flex;gap:4px;padding:4px;background:rgba(40,45,50,.95);border:1px solid #485058;border-radius:8px}
+.hint{position:absolute;bottom:10px;left:10px;z-index:20;background:rgba(40,45,50,.95);border:1px solid #485058;border-radius:7px;padding:7px 9px;color:#a4adb6;font-size:10px}
+.select-box{position:absolute;z-index:15;border:1px solid #7694b4;background:rgba(118,148,180,.13);pointer-events:none}
+.select-actions{position:absolute;z-index:25;left:50%;bottom:14px;transform:translateX(-50%);display:flex;gap:5px;align-items:center;background:rgba(40,45,50,.97);border:1px solid #485058;border-radius:8px;padding:5px}
+.select-actions .count{padding:0 6px;color:#a6afb8;font-size:10px}
+.rail{width:42px;flex:0 0 42px;background:#23272c;border-left:1px solid #15191e;display:flex;justify-content:center;z-index:40}
+.rail button{width:32px;height:42px;margin-top:8px;border:1px solid #434a52;background:#2c3137;border-radius:7px;color:#a6afb7}
+.rail button.active{background:#363c43;color:#eef1f4;border-color:#59626c}
+.inspector{width:360px;flex:0 0 360px;height:100%;min-height:0;background:#292e34;border-left:1px solid #4b525a;display:flex;flex-direction:column;min-width:360px;max-width:360px;overflow:hidden;z-index:40}
+.ihead{height:52px;padding:0 10px;display:flex;align-items:center;border-bottom:1px solid #40474f}
+.isub{font-size:9px;text-transform:uppercase;letter-spacing:.09em;color:#7f8993}
+.ititle{font-size:12px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.itab{display:flex;border-bottom:1px solid #40474f}
+.itab button{flex:1;height:36px;border:0;background:transparent;color:#8b949d}
+.itab button.active{background:#30353b;color:#eef2f5;border-bottom:2px solid #9aacbf}
+.panel{flex:1;min-height:0;overflow:auto;padding:13px}
+.field{margin-bottom:11px}
+.field label{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.09em;color:#7f8992;margin-bottom:5px}
+.inp{width:100%;background:#1e2328;border:1px solid #3e464e;color:#eef2f5;border-radius:6px;padding:8px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.card{background:#242a30;border:1px solid #414950;border-radius:7px;padding:9px;margin-bottom:9px}
+.card-head{display:flex;gap:6px;align-items:center;margin-bottom:8px}
+.actions{display:flex;gap:5px;flex-wrap:wrap}
+.small{height:28px;padding:0 8px}
+.muted{font-size:10px;color:#7f8892}
+.inspector-empty{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;padding:30px;color:#7f8993;font-size:11px;line-height:1.6}
+.rail-label{writing-mode:vertical-rl;transform:rotate(180deg);margin-top:58px;font-size:9px;color:#8d969f;letter-spacing:.11em}
+.page{flex:1 1 auto;width:100%;height:100%;min-height:0;overflow:auto;background:#22272d;padding:18px}
+.page-inner{max-width:1180px;margin:auto}
+.page-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px}
+.title{font-size:17px;font-weight:650}
+.sub{font-size:10px;color:#858e97;margin-top:3px}
+.search{display:flex;gap:7px;margin-bottom:12px}
+.page-input{width:300px;background:#181d22;color:#e6eaed;border:1px solid #3d444c;border-radius:7px;padding:9px}
+.db{width:100%;border-collapse:collapse;background:#262b31;border:1px solid #3b424a;border-radius:8px;overflow:hidden}
+.db th{padding:10px;text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#818a94;background:#2d3238}
+.db td{padding:10px;border-top:1px solid #343a41;font-size:11px;color:#cad0d5}
+.db tr{cursor:pointer}
+.db tr:hover td{background:#2a2f35}
+.assets{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.asset{background:#292e34;border:1px solid #414850;border-radius:8px;overflow:hidden}
+.asset-img{aspect-ratio:4/3;background:#171b20}
+.asset-img img{width:100%;height:100%;display:block;object-fit:cover}
+.asset-meta{display:flex;gap:8px;align-items:center;padding:9px}
+.asset-name{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px}
+.empty{border:1px dashed #4c545d;border-radius:8px;padding:42px;text-align:center;color:#808a94;font-size:11px}
+.menu{position:fixed;z-index:2000;width:275px;background:#252a30;border:1px solid #48505a;border-radius:9px;box-shadow:0 18px 48px rgba(0,0,0,.4);padding:5px}
+.menu-head{padding:7px 8px 4px;color:#737d86;font-size:9px;text-transform:uppercase;letter-spacing:.12em}
+.menu-row{width:100%;height:34px;border:0;background:transparent;border-radius:6px;padding:0 9px;display:flex;align-items:center;gap:9px;text-align:left}
+.menu-row:hover{background:#343a42}
+.menu-icon{width:20px;text-align:center;color:#aeb8c1}
+.shortcut{margin-left:auto;font-size:10px;color:#808a94}
+.sep{height:1px;background:#3b4249;margin:5px 0}
+.toast{position:fixed;right:55px;bottom:12px;z-index:3000;padding:8px 10px;background:#2c3137;border:1px solid #4a5159;border-radius:7px;color:#cbd2d9;font-size:10px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+(function(){
+'use strict';
+
+const TYPES = {
+    character: ['Character', '●', '#688dbb'], lore: ['Lore', '▤', '#9e8350'], spell: ['Ability', '✦', '#8b78b7'],
+    faction: ['Faction', '◆', '#579582'], location: ['Location', '⌖', '#5f8fa8'], item: ['Item', '◇', '#a38f59'],
+    quest: ['Quest', '⚑', '#a77488'], group: ['Frame', '□', '#818c98']
+};
+
+const uid = p => p + '-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
+const cp = o => JSON.parse(JSON.stringify(o));
+const blank = () => ({ name: 'Untitled', content: '', tag: '', status: 'Draft', role: '', alignment: '', school: '', cost: '', region: '', leader: '', blocks: [] });
+
+const seed = {
+    nodes: [
+        { id: 'g1', type: 'group', x: 70, y: 70, width: 820, height: 540, data: { ...blank(), name: 'ARC I · THE SUNDERING', content: 'Main narrative frame.' } },
+        { id: 'c1', type: 'character', x: 120, y: 145, width: 320, height: 205, data: { ...blank(), name: 'Elara Moonwhisper', role: 'Arcane Scholar', alignment: 'Chaotic Good', tag: 'Protagonist', status: 'Active', content: 'Exiled from the High Tower for pursuing forbidden chronomancy. Searching for the lost shards of the Aethel.' } },
+        { id: 'l1', type: 'lore', x: 515, y: 135, width: 320, height: 190, data: { ...blank(), name: 'The Sundering of Time', tag: 'History', status: 'Established', content: 'The high mages attempted to rewrite history. The ritual fractured the timeline.' } },
+        { id: 's1', type: 'spell', x: 515, y: 380, width: 320, height: 190, data: { ...blank(), name: 'Chrono-Phase', school: 'Chronomancy', cost: '40 Mana', tag: 'Ability', status: 'Stable', content: 'Shifts the caster out of the standard timeline for three seconds.' } },
+        { id: 'loc1', type: 'location', x: 940, y: 165, width: 320, height: 190, data: { ...blank(), name: 'Aethelgard Citadel', region: 'Northern Spires', tag: 'Location', status: 'Ruined', content: 'A broken citadel suspended above a permanent time fracture.' } },
+        { id: 'f1', type: 'faction', x: 940, y: 410, width: 320, height: 190, data: { ...blank(), name: 'High Tower', leader: 'Council of Nine', tag: 'Faction', status: 'Hostile', content: 'The magical order responsible for the failed ritual.' } }
+    ],
+    edges: [{ id: 'e1', source: 'c1', target: 'l1', label: 'Triggered' }, { id: 'e2', source: 'c1', target: 's1', label: 'Mastered' }, { id: 'e3', source: 'l1', target: 'loc1', label: 'Created' }, { id: 'e4', source: 'f1', target: 'l1', label: 'Caused' }],
+    assets: [], collections: []
+};
+
+let saved;
+try { saved = JSON.parse(localStorage.getItem('langi-fixed-final')) } catch (e) { };
+const S = saved && Array.isArray(saved.nodes) ? saved : cp(seed);
+
+const state = {
+    project: S, view: 'canvas', selected: [], tab: 'details',
+    camera: { x: 90, y: 55, z: 0.78 }, menu: null, marquee: null, marqueeMoved: false,
+    pan: null, drag: null, connect: null, space: false, actions: false, history: [], future: [], toast: ''
+};
+
+const $ = s => document.querySelector(s);
+const app = $('#app');
+
+function save() { localStorage.setItem('langi-fixed-final', JSON.stringify(state.project)) }
+let toastTimer, liveSaveTimer;
+function saveSoon() { clearTimeout(liveSaveTimer); liveSaveTimer = setTimeout(save, 120); }
+function toast(m) { state.toast = m; render(); clearTimeout(toastTimer); toastTimer = setTimeout(() => { state.toast = ''; render() }, 1400) }
+function commit(next) { state.history.push(cp(state.project)); if (state.history.length > 50) state.history.shift(); state.future = []; state.project = next; save() }
+function mutate(fn) { const n = fn(cp(state.project)); commit(n) }
+function selectedNode() { return state.selected.length === 1 ? state.project.nodes.find(n => n.id === state.selected[0]) : null }
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])) }
+function screenToWorld(clientX, clientY) { const r = $('.canvas').getBoundingClientRect(); return { x: (clientX - r.left - state.camera.x) / state.camera.z, y: (clientY - r.top - state.camera.y) / state.camera.z } }
+function addNode(type, x, y) {
+    const n = { id: uid(type), type, x: x ?? ((340 - state.camera.x) / state.camera.z), y: y ?? ((160 - state.camera.y) / state.camera.z), width: type === 'group' ? 420 : 320, height: type === 'group' ? 280 : 190, data: { ...blank(), name: 'New ' + TYPES[type][0], tag: TYPES[type][0] } };
+    mutate(p => ({ ...p, nodes: [n, ...p.nodes] }));
+    state.selected = [n.id]; state.tab = 'details'; state.menu = null; render();
+}
+
+function deleteSelected() {
+    if (!state.selected.length) return;
+    const ids = [...state.selected];
+    mutate(p => ({
+        ...p,
+        nodes: p.nodes.filter(n => !ids.includes(n.id)),
+        edges: p.edges.filter(e => !ids.includes(e.source) && !ids.includes(e.target)),
+        collections: (p.collections || []).map(c => ({ ...c, nodeIds: c.nodeIds.filter(id => !ids.includes(id)) })).filter(c => c.nodeIds.length)
+    }));
+    state.selected = []; state.actions = false; render();
+}
+
+function duplicate(id) {
+    const n = state.project.nodes.find(n => n.id === id); if (!n) return;
+    const c = { ...cp(n), id: uid(n.type), x: n.x + 36, y: n.y + 36, data: { ...cp(n.data), name: (n.data.name || 'Untitled') + ' Copy' } };
+    mutate(p => ({ ...p, nodes: [c, ...p.nodes] }));
+    state.selected = [c.id]; render();
+}
+
+function makeGroup() {
+    if (!state.selected.length) return;
+    const ns = state.project.nodes.filter(n => state.selected.includes(n.id)); if (!ns.length) return;
+    const minX = Math.min(...ns.map(n => n.x)) - 24, minY = Math.min(...ns.map(n => n.y)) - 46, maxX = Math.max(...ns.map(n => n.x + n.width)) + 24, maxY = Math.max(...ns.map(n => n.y + n.height)) + 24;
+    const g = { id: uid('group'), type: 'group', x: minX, y: minY, width: maxX - minX, height: maxY - minY, data: { ...blank(), name: 'New Frame', content: 'Grouped entities.' } };
+    mutate(p => ({ ...p, nodes: [g, ...p.nodes] }));
+    state.selected = [g.id]; state.actions = false; state.menu = null; render();
+}
+
+function makeCollection() {
+    if (!state.selected.length) return;
+    const c = { id: uid('collection'), name: 'Collection ' + (((state.project.collections || []).length) + 1), nodeIds: [...state.selected] };
+    mutate(p => ({ ...p, collections: [...(p.collections || []), c] }));
+    state.actions = false; state.menu = null; toast('Collection created');
+}
+
+function boxIds(m) {
+    const x1 = Math.min(m.sx, m.ex), x2 = Math.max(m.sx, m.ex), y1 = Math.min(m.sy, m.ey), y2 = Math.max(m.sy, m.ey);
+    return state.project.nodes.filter(n => n.type !== 'group' && n.x < x2 && n.x + n.width > x1 && n.y < y2 && n.y + n.height > y1).map(n => n.id);
+}
+
+function zoomAt(f, cx, cy) {
+    const r = $('.canvas').getBoundingClientRect(), px = cx - r.left, py = cy - r.top, nz = Math.max(.2, Math.min(2.5, state.camera.z * f)), wx = (px - state.camera.x) / state.camera.z, wy = (py - state.camera.y) / state.camera.z;
+    state.camera = { x: px - wx * nz, y: py - wy * nz, z: nz };
+    renderCanvasOnly();
+}
+
+function fit() {
+    const ns = state.project.nodes; if (!ns.length) return;
+    const r = $('.canvas').getBoundingClientRect(), minX = Math.min(...ns.map(n => n.x)), minY = Math.min(...ns.map(n => n.y)), maxX = Math.max(...ns.map(n => n.x + n.width)), maxY = Math.max(...ns.map(n => n.y + n.height));
+    const z = Math.max(.25, Math.min(1.1, (r.width - 120) / (maxX - minX + 120), (r.height - 100) / (maxY - minY + 120)));
+    state.camera = { x: (r.width - (maxX - minX) * z) / 2 - minX * z, y: (r.height - (maxY - minY) * z) / 2 - minY * z, z };
+    renderCanvasOnly();
+}
+
+function focus() {
+    const n = selectedNode(); if (!n) return;
+    const r = $('.canvas').getBoundingClientRect();
+    state.camera = { x: r.width / 2 - (n.x + n.width / 2) * state.camera.z, y: r.height / 2 - (n.y + n.height / 2) * state.camera.z, z: state.camera.z };
+    renderCanvasOnly();
+}
+
+function renderCanvasOnly() {
+    if (state.view !== 'canvas') return;
+    const w = $('.world');
+    if (w) w.style.transform = `translate(${state.camera.x}px,${state.camera.y}px) scale(${state.camera.z})`;
+    const g = $('.grid');
+    if (g) {
+        g.style.backgroundPosition = `${state.camera.x}px ${state.camera.y}px`;
+        g.style.backgroundSize = `${60 * state.camera.z}px ${60 * state.camera.z}px`;
+    }
+    const zl = $('[data-zoom-label]');
+    if (zl) zl.textContent = Math.round(state.camera.z * 100) + '%';
+}
+
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+function fitNodeToImage(nodeId) {
+    const n = state.project.nodes.find(x => x.id === nodeId);
+    if (!n || n.type === 'group') return;
+    const block = (n.data?.blocks || []).find(b => b.type === 'image' && b.url);
+    if (!block) return;
+    const img = new Image();
+    img.onload = () => {
+        const ratio = img.naturalWidth && img.naturalHeight ? img.naturalHeight / img.naturalWidth : 0.75;
+        const targetWidth = clamp(img.naturalWidth || 420, 320, 520);
+        const nodeEl = document.querySelector(`[data-node="${nodeId}"]`);
+        const oldWidth = n.width;
+        n.width = Math.round(targetWidth);
+        if (nodeEl) nodeEl.style.width = n.width + 'px';
+        const renderedImg = nodeEl?.querySelector('.image-block img');
+        if (renderedImg) renderedImg.style.width = '100%';
+        const measured = nodeEl ? nodeEl.scrollHeight : 0;
+        const fallbackHeight = 40 + 20 + 66 + Math.round(targetWidth * ratio) + 18;
+        n.height = Math.max(190, Math.round(measured || fallbackHeight));
+        if (oldWidth !== n.width) n.x = Math.round(n.x);
+        save();
+        renderCanvasOnly();
+        const live = document.querySelector(`[data-node="${nodeId}"]`);
+        if (live) { live.style.width = n.width + 'px'; live.style.height = n.height + 'px'; }
+    };
+    img.src = block.url;
+}
+
+function blockHtml(b) {
+    if (b.type === 'table') return `<div class="block"><div class="block-title">${esc(b.title)}</div><table><thead><tr>${b.headers.map(h => `<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${b.rows.slice(0, 3).map(r => `<tr>${r.map(c => `<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+    if (b.type === 'graph') {
+        const max = Math.max(1, ...b.items.map(x => Number(x.value) || 0));
+        return `<div class="block"><div class="block-title">${esc(b.title)}</div>${b.items.slice(0, 4).map(i => `<div class="bar-row"><div class="bar-head"><span>${esc(i.label)}</span><span>${Number(i.value) || 0}</span></div><div class="bar-track"><div class="bar-fill" style="width:${Math.max(0, Math.min(100, (Number(i.value) || 0) / max * 100))}%"></div></div></div>`).join('')}</div>`;
+    }
+    return `<div class="block image-block"><div class="block-title">${esc(b.title)}</div>${b.url ? `<img src="${b.url}" alt="">` : '<div class="muted">No image selected.</div>'}</div>`;
+}
+
+function render() {
+    app.innerHTML = `<div class="top"><div class="brand"><div class="mark">L</div><div class="name">Langi <span>Engine</span></div><div class="tabs">${[['canvas', 'Canvas'], ['database', 'Database'], ['assets', 'Assets']].map(x => `<button data-view="${x[0]}" class="${state.view === x[0] ? 'active' : ''}">${x[1]}</button>`).join('')}</div><div class="status">Shift+A Add · Space Pan · MMB Pan · Blue → Red Connect</div></div><div class="tools"><button class="tool" data-act="undo" ${state.history.length ? '' : 'disabled'}>↶</button><button class="tool" data-act="redo" ${state.future.length ? '' : 'disabled'}>↷</button><button class="tool" data-act="fit">Fit</button><button class="tool" data-act="export">Export</button><button class="tool" data-act="import">Import</button><button class="tool primary" data-act="add">+ Entity</button></div></div><div class="workspace">${state.view === 'canvas' ? canvasHtml() : state.view === 'database' ? databaseHtml() : assetsHtml()}</div>${state.menu ? menuHtml() : ''}${state.toast ? `<div class="toast">${esc(state.toast)}</div>` : ''}`;
+    bind();
+}
+
+function canvasHtml() {
+    const ns = state.project.nodes, eds = state.project.edges, n = selectedNode();
+    return `<div class="canvas-shell">
+        <div class="canvas" data-canvas>
+            <div class="grid" style="background-position:${state.camera.x}px ${state.camera.y}px;background-size:${60 * state.camera.z}px ${60 * state.camera.z}px"></div>
+            <div class="toolbar"><button class="tool small" data-act="zoom-in">+</button><button class="tool small" data-zoom-label>${Math.round(state.camera.z * 100)}%</button><button class="tool small" data-act="zoom-out">−</button><button class="tool small" data-act="fit">Fit</button><button class="tool small" data-act="focus" ${n ? '' : 'disabled'}>Focus</button></div>
+            <div class="hint">LMB drag: box select · Shift+drag: extend selection · MMB drag: pan · Connect blue → red · Shift+A: add · Right click: menu</div>
+            <div class="world" style="transform:translate(${state.camera.x}px,${state.camera.y}px) scale(${state.camera.z})">
+                ${edgesHtml(eds, ns)}${state.connect ? connectionPreviewHtml() : ''}${ns.map(nodeHtml).join('')}
+            </div>
+            ${state.marquee ? `<div class="select-box" style="left:${Math.min(state.marquee.sx, state.marquee.ex) * state.camera.z + state.camera.x}px;top:${Math.min(state.marquee.sy, state.marquee.ey) * state.camera.z + state.camera.y}px;width:${Math.abs(state.marquee.ex - state.marquee.sx) * state.camera.z}px;height:${Math.abs(state.marquee.ey - state.marquee.sy) * state.camera.z}px"></div>` : ''}
+            ${state.actions ? `<div class="select-actions"><span class="count">${state.selected.length} selected</span><button class="tool small" data-act="group">Group</button><button class="tool small" data-act="collection">Create Collection</button><button class="tool small" data-act="close-actions">×</button></div>` : ''}
+        </div>
+        ${n ? inspectorHtml(n) : inspectorEmptyHtml()}
+    </div>`;
+}
+
+function inspectorEmptyHtml() {
+    return `<aside class="inspector"><div class="ihead"><div><div class="isub">Inspector</div><div class="ititle">No selection</div></div></div><div class="inspector-empty">Select a node on the canvas to inspect and edit it.<br><br>The Inspector is always available here. Edit a field and the node updates live.</div></aside>`;
+}
+
+function portPoint(n, side) {
+    return { x: side === 'output' ? n.x + n.width : n.x, y: n.y + n.height / 2 };
+}
+
+function edgesHtml(eds, ns) {
+    const paths = eds.map(e => {
+        const a = ns.find(n => n.id === e.source), b = ns.find(n => n.id === e.target);
+        if (!a || !b) return '';
+        const p1 = portPoint(a, 'output'), p2 = portPoint(b, 'input');
+        const o = Math.max(70, Math.abs(p2.x - p1.x) * .42);
+        const d = `M${p1.x} ${p1.y} C${p1.x + o} ${p1.y}, ${p2.x - o} ${p2.y}, ${p2.x} ${p2.y}`;
+        const labelX = (p1.x + p2.x) / 2, labelY = (p1.y + p2.y) / 2 - 7;
+        return `<path class="connection-line" d="${d}"/><circle class="connection-arrow" cx="${p2.x}" cy="${p2.y}" r="4"/><text class="connection-label" x="${labelX}" y="${labelY}" text-anchor="middle">${esc(e.label || 'Linked')}</text>`;
+    }).join('');
+    return `<svg class="edge-layer" viewBox="0 0 10000 10000" preserveAspectRatio="none">${paths}</svg>`;
+}
+
+function connectionPreviewHtml() {
+    const c = state.connect; if (!c) return '';
+    const p1 = { x: c.x, y: c.y }, p2 = { x: c.mx, y: c.my };
+    const o = Math.max(70, Math.abs(p2.x - p1.x) * .42);
+    const d = `M${p1.x} ${p1.y} C${p1.x + o} ${p1.y}, ${p2.x - o} ${p2.y}, ${p2.x} ${p2.y}`;
+    return `<svg class="edge-layer" viewBox="0 0 10000 10000" preserveAspectRatio="none"><path class="connection-preview" d="${d}"/></svg>`;
+}
+
+function nodeHtml(n) {
+    const meta = TYPES[n.type], d = n.data || {};
+    if (n.type === 'group') return `<div class="node group ${state.selected.includes(n.id) ? 'selected' : ''}" data-node="${n.id}" style="left:${n.x}px;top:${n.y}px;width:${n.width}px;height:${n.height}px"><div class="group-title" style="color:${meta[2]}">${meta[1]} ${esc(d.name)}</div></div>`;
+    const tag = d.tag ? ` · ${esc(d.tag)}` : '';
+    return `<div class="node ${state.selected.includes(n.id) ? 'selected' : ''}" data-node="${n.id}" style="left:${n.x}px;top:${n.y}px;width:${n.width}px;height:${n.height}px">\
+        <div class="port input" data-port="input" data-node="${n.id}" title="Input"></div>\
+        <div class="port output" data-port="output" data-node="${n.id}" title="Output"></div>\
+        <div class="head"><span class="type" style="color:${meta[2]}">${meta[1]}</span><span class="node-name" data-live-name>${esc(d.name)}</span><span class="badge" data-live-tag>${meta[0]}${tag}</span></div>\
+        <div class="body"><div class="desc" data-live-description>${esc(d.content || 'No description yet.')}</div>${(d.role || d.region || d.school || d.leader) ? `<div class="meta" data-live-meta>${esc(d.role || d.region || d.school || d.leader)}</div>` : '<div class="meta" data-live-meta style="display:none"></div>'}${(d.blocks || []).slice(0, 2).map(blockHtml).join('')}</div>\
+    </div>`;
+}
+
+function inspectorHtml(n) {
+    return `<aside class="inspector"><div class="ihead"><div style="flex:1;min-width:0"><div class="isub">Inspector</div><div class="ititle">${esc(n.data.name)}</div></div></div><div class="itab"><button class="${state.tab === 'details' ? 'active' : ''}" data-tab="details">Details</button><button class="${state.tab === 'content' ? 'active' : ''}" data-tab="content">Content</button><button class="${state.tab === 'links' ? 'active' : ''}" data-tab="links">Links</button></div>${state.tab === 'details' ? detailsHtml(n) : state.tab === 'content' ? contentHtml(n) : linksHtml(n)}<div style="padding:10px;border-top:1px solid #40474f;display:flex;gap:6px"><button class="tool" style="flex:1" data-act="duplicate">Duplicate</button><button class="tool" style="flex:1" data-act="delete">Delete</button></div></aside>`;
+}
+
+function detailsHtml(n) {
+    const d = n.data;
+    return `<div class="panel"><div class="field"><label>Name</label><input class="inp" data-field="name" value="${esc(d.name)}"></div><div class="split"><div class="field"><label>Tag</label><input class="inp" data-field="tag" value="${esc(d.tag)}"></div><div class="field"><label>Status</label><input class="inp" data-field="status" value="${esc(d.status)}"></div></div><div class="field"><label>Description</label><textarea class="inp" data-field="content" rows="7">${esc(d.content)}</textarea></div>${n.type === 'character' ? `<div class="split"><div class="field"><label>Role</label><input class="inp" data-field="role" value="${esc(d.role)}"></div><div class="field"><label>Alignment</label><input class="inp" data-field="alignment" value="${esc(d.alignment)}"></div></div>` : ''}${n.type === 'spell' ? `<div class="split"><div class="field"><label>School</label><input class="inp" data-field="school" value="${esc(d.school)}"></div><div class="field"><label>Cost</label><input class="inp" data-field="cost" value="${esc(d.cost)}"></div></div>` : ''}${n.type === 'location' ? `<div class="field"><label>Region</label><input class="inp" data-field="region" value="${esc(d.region)}"></div>` : ''}${n.type === 'faction' ? `<div class="field"><label>Leader</label><input class="inp" data-field="leader" value="${esc(d.leader)}"></div>` : ''}<div class="muted">Changes save automatically.</div></div>`;
+}
+
+function contentHtml(n) {
+    const bs = n.data.blocks || [];
+    return `<div class="panel"><div class="actions" style="margin-bottom:10px"><button class="tool small" data-block-add="table">+ Table</button><button class="tool small" data-block-add="graph">+ Graph</button><button class="tool small" data-block-add="image">+ Image</button></div>${bs.length ? bs.map((b, i) => blockEditorHtml(b, i)).join('') : '<div class="muted">Add a table, graph, or image block to this node.</div>'}</div>`;
+}
+
+function blockEditorHtml(b, i) {
+    if (b.type === 'table') return `<div class="card"><div class="card-head"><input class="inp" data-b-title="${i}" value="${esc(b.title)}"><button class="tool small" data-b-del="${i}">×</button></div><div class="muted" style="margin-bottom:5px">Columns</div><div class="split">${b.headers.map((h, j) => `<input class="inp" data-t-head="${i}:${j}" value="${esc(h)}">`).join('')}</div><div class="muted" style="margin:9px 0 5px">Rows</div>${b.rows.map((r, ri) => `<div class="split" style="margin-bottom:5px">${r.map((c, ci) => `<input class="inp" data-t-cell="${i}:${ri}:${ci}" value="${esc(c)}">`).join('')}</div>`).join('')}<button class="tool small" data-t-row="${i}">+ Row</button></div>`;
+    if (b.type === 'graph') return `<div class="card"><div class="card-head"><input class="inp" data-b-title="${i}" value="${esc(b.title)}"><button class="tool small" data-b-del="${i}">×</button></div>${b.items.map((x, j) => `<div class="split" style="margin-bottom:5px"><input class="inp" data-g-label="${i}:${j}" value="${esc(x.label)}"><input class="inp" type="number" data-g-value="${i}:${j}" value="${Number(x.value) || 0}"></div>`).join('')}<button class="tool small" data-g-add="${i}">+ Data</button></div>`;
+    return `<div class="card"><div class="card-head"><input class="inp" data-b-title="${i}" value="${esc(b.title)}"><button class="tool small" data-b-del="${i}">×</button></div><select class="inp" data-img-select="${i}"><option value="">Select asset</option>${state.project.assets.map(a => `<option value="${a.id}" ${a.id === b.assetId ? 'selected' : ''}>${esc(a.name)}</option>`).join('')}</select>${b.url ? `<img src="${b.url}" style="width:100%;max-height:170px;object-fit:cover;border-radius:6px;margin-top:7px">` : ''}</div>`;
+}
+
+function linksHtml(n) {
+    const links = state.project.edges.filter(e => e.source === n.id || e.target === n.id);
+    return `<div class="panel">${links.length ? links.map(e => { const o = state.project.nodes.find(x => x.id === (e.source === n.id ? e.target : e.source)); return `<div class="card"><div style="display:flex;gap:8px;align-items:center;justify-content:space-between"><span>${esc(o?.data.name || 'Unknown')}</span><button class="tool small" data-edge-del="${e.id}">×</button></div></div>`; }).join('') : '<div class="muted" style="margin-bottom:9px">No links yet.</div>'}<select class="inp" data-connect><option value="">+ Connect entity</option>${state.project.nodes.filter(x => x.id !== n.id).map(x => `<option value="${x.id}">${esc(x.data.name)}</option>`).join('')}</select></div>`;
+}
+
+function databaseHtml() {
+    const q = (state.dbSearch || '').toLowerCase(), f = state.dbFilter || 'all', rows = state.project.nodes.filter(n => n.type !== 'group' && (f === 'all' || n.type === f) && (!q || `${n.data.name} ${n.data.tag} ${n.data.content}`.toLowerCase().includes(q)));
+    return `<section class="page"><div class="page-inner"><div class="page-head"><div><div class="title">Entity Database</div><div class="sub">Browse the project as structured data.</div></div></div><div class="search"><input class="page-input" data-db-search placeholder="Search entities…" value="${esc(state.dbSearch || '')}"><select class="page-input" style="width:170px" data-db-filter><option value="all">All types</option>${Object.keys(TYPES).filter(k => k !== 'group').map(k => `<option value="${k}" ${f === k ? 'selected' : ''}>${TYPES[k][0]}</option>`).join('')}</select></div><table class="db"><thead><tr><th>Type</th><th>Name</th><th>Tag</th><th>Status</th><th>Links</th></tr></thead><tbody>${rows.map(n => `<tr data-open-node="${n.id}"><td style="color:${TYPES[n.type][2]}">${TYPES[n.type][1]} ${TYPES[n.type][0]}</td><td>${esc(n.data.name)}</td><td>${esc(n.data.tag || '—')}</td><td>${esc(n.data.status || '—')}</td><td>${state.project.edges.filter(e => e.source === n.id || e.target === n.id).length}</td></tr>`).join('')}</tbody></table></div></section>`;
+}
+
+function assetsHtml() {
+    return `<section class="page"><div class="page-inner"><div class="page-head"><div><div class="title">Assets</div><div class="sub">Images can be inserted into node content blocks.</div></div><button class="tool primary" data-act="upload">Upload images</button></div>${state.project.assets.length ? `<div class="assets">${state.project.assets.map(a => `<div class="asset"><div class="asset-img"><img src="${a.url}" alt=""></div><div class="asset-meta"><div class="asset-name" title="${esc(a.name)}">${esc(a.name)}</div><button class="tool small" data-asset-del="${a.id}">Delete</button></div></div>`).join('')}</div>` : '<div class="empty">No images yet. Upload references here.</div>'}</div></section>`;
+}
+
+function menuHtml() {
+    const x = state.menu;
+    const create = [['character', 'Character', 'C'], ['lore', 'Lore', 'L'], ['spell', 'Ability', 'B'], ['faction', 'Faction', 'F'], ['location', 'Location', 'O'], ['item', 'Item', 'I'], ['quest', 'Quest', 'Q'], ['group', 'Frame / Group', 'G']];
+    return `<div class="menu" style="left:${x.x}px;top:${x.y}px" data-menu><div class="menu-head">Create</div>${create.map(a => `<button class="menu-row" data-create="${a[0]}"><span class="menu-icon">${TYPES[a[0]][1]}</span><span>${a[1]}</span><span class="shortcut">${a[2]}</span></button>`).join('')}${x.type === 'node' ? `<div class="sep"></div><button class="menu-row" data-menu-act="select">Select node <span class="shortcut">Enter</span></button><button class="menu-row" data-menu-act="dup">Duplicate <span class="shortcut">Ctrl+D</span></button><button class="menu-row" data-menu-act="del">Delete <span class="shortcut">Del</span></button>` : ''}${state.selected.length ? `<div class="sep"></div><button class="menu-row" data-menu-act="group">Group selection</button><button class="menu-row" data-menu-act="collection">Create collection</button>` : ''}<div class="sep"></div><div class="menu-head">Shift+A opens this menu</div></div>`;
+}
+
+function updateNodeFieldLive(id, field, value) {
+    const n = state.project.nodes.find(x => x.id === id);
+    if (!n) return;
+    n.data = { ...n.data, [field]: value };
+    saveSoon();
+    const el = document.querySelector(`[data-node="${id}"]`);
+    if (!el) return;
+    if (field === 'name') {
+        const nameEl = el.querySelector('[data-live-name]'); if (nameEl) nameEl.textContent = value || 'Untitled';
+        const titleEl = document.querySelector('.inspector .ititle'); if (titleEl) titleEl.textContent = value || 'Untitled';
+    } else if (field === 'content') {
+        const descEl = el.querySelector('[data-live-description]'); if (descEl) descEl.textContent = value || 'No description yet.';
+    } else if (field === 'tag') {
+        const tagEl = el.querySelector('[data-live-tag]'); if (tagEl) tagEl.textContent = TYPES[n.type]?.[0] + (value ? ' · ' + value : '');
+    } else if (['role','region','school','leader'].includes(field)) {
+        const metaValue = n.data.role || n.data.region || n.data.school || n.data.leader || '';
+        const metaEl = el.querySelector('[data-live-meta]');
+        if (metaEl) { metaEl.textContent = metaValue; metaEl.style.display = metaValue ? '' : 'none'; }
+    }
+}
+
+function bind() {
+    document.querySelectorAll('[data-view]').forEach(b => b.onclick = () => { state.view = b.dataset.view; state.menu = null; render() });
+    document.querySelectorAll('[data-act]').forEach(b => b.onclick = e => {
+        const a = b.dataset.act;
+        if (a === 'undo') { if (state.history.length) { state.future.unshift(cp(state.project)); state.project = state.history.pop(); save(); render() } }
+        else if (a === 'redo') { if (state.future.length) { state.history.push(cp(state.project)); state.project = state.future.shift(); save(); render() } }
+        else if (a === 'fit') fit(); else if (a === 'focus') focus();
+        else if (a === 'zoom-in') zoomAt(1.12, innerWidth / 2, innerHeight / 2);
+        else if (a === 'zoom-out') zoomAt(.89, innerWidth / 2, innerHeight / 2);
+        else if (a === 'add') { addNode('character') }
+        else if (a === 'delete') { deleteSelected() }
+        else if (a === 'duplicate') { if (state.selected.length === 1) duplicate(state.selected[0]) }
+        else if (a === 'group') makeGroup(); else if (a === 'collection') makeCollection();
+        else if (a === 'close-actions') { state.actions = false; render() }
+        else if (a === 'export') exportJson();
+        else if (a === 'import') $('#json-file')?.click();
+        else if (a === 'upload') $('#asset-file')?.click();
+    });
+    document.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => { state.tab = b.dataset.tab; render() });
+
+    const c = $('.canvas');
+    if (c) {
+        c.onpointerdown = e => {
+            if (e.button === 1) {
+                e.preventDefault();
+                state.pan = { sx: e.clientX, sy: e.clientY, cx: state.camera.x, cy: state.camera.y };
+                return;
+            }
+            if (e.button !== 0) return;
+            if (e.target.closest('[data-menu]') || e.target.closest('.toolbar') || e.target.closest('.select-actions') || e.target.closest('.hint')) return;
+            const port = e.target.closest('[data-port]');
+            if (port && port.dataset.port === 'output') {
+                e.preventDefault(); e.stopPropagation();
+                const n = state.project.nodes.find(x => x.id === port.dataset.node);
+                if (!n) return;
+                const p = portPoint(n, 'output');
+                state.connect = { source: n.id, x: p.x, y: p.y, mx: p.x, my: p.y };
+                c.classList.add('connecting');
+                renderCanvasOnly();
+                return;
+            }
+            if (state.space) { state.pan = { sx: e.clientX, sy: e.clientY, cx: state.camera.x, cy: state.camera.y }; return; }
+            const node = e.target.closest('[data-node]');
+            if (node) {
+                const id = node.dataset.node;
+                if (e.shiftKey) {
+                    if (state.selected.includes(id)) state.selected = state.selected.filter(x => x !== id);
+                    else state.selected = [...state.selected, id];
+                    render(); return;
+                }
+                if (!state.selected.includes(id)) { state.selected = [id]; }
+                state.drag = { id, sx: e.clientX, sy: e.clientY, starts: {} };
+                state.marqueeMoved = false;
+                state.project.nodes.forEach(n => { if (state.selected.includes(n.id)) state.drag.starts[n.id] = { x: n.x, y: n.y } });
+                render(); return;
+            }
+            const p = screenToWorld(e.clientX, e.clientY);
+            state.marquee = { sx: p.x, sy: p.y, ex: p.x, ey: p.y, shift: e.shiftKey };
+            state.marqueeMoved = false; state.actions = false;
+            if (!e.shiftKey) state.selected = [];
+            render();
+        };
+        c.onwheel = e => { e.preventDefault(); zoomAt(e.deltaY < 0 ? 1.1 : .9, e.clientX, e.clientY) };
+        c.oncontextmenu = e => {
+            e.preventDefault(); const node = e.target.closest('[data-node]'); const r = c.getBoundingClientRect();
+            state.menu = { x: Math.min(innerWidth - 285, Math.max(5, e.clientX)), y: Math.min(innerHeight - 430, Math.max(5, e.clientY)), type: node ? 'node' : 'canvas', target: node ? node.dataset.node : null, world: { x: (e.clientX - r.left - state.camera.x) / state.camera.z, y: (e.clientY - r.top - state.camera.y) / state.camera.z } };
+            render();
+        };
+    }
+
+    document.querySelectorAll('[data-field]').forEach(el => { const id = state.selected[0]; const handler = () => { if (id) updateNodeFieldLive(id, el.dataset.field, el.value); }; el.oninput = handler; el.onchange = handler; });
+    document.querySelectorAll('[data-block-add]').forEach(b => b.onclick = () => { const n = selectedNode(); if (!n) return; const type = b.dataset.blockAdd; let block = type === 'table' ? { id: uid('block'), type, title: 'Table', headers: ['Key', 'Value'], rows: [['', '']] } : type === 'graph' ? { id: uid('block'), type, title: 'Graph', items: [{ label: 'A', value: 40 }, { label: 'B', value: 65 }, { label: 'C', value: 30 }] } : { id: uid('block'), type, title: 'Image', assetId: state.project.assets[0]?.id || '', url: state.project.assets[0]?.url || '' }; mutate(p => ({ ...p, nodes: p.nodes.map(x => x.id === n.id ? { ...x, data: { ...x.data, blocks: [...(x.data.blocks || []), block] } } : x) })); render(); if (type === 'image' && block.url) requestAnimationFrame(() => fitNodeToImage(n.id)); });
+    document.querySelectorAll('[data-b-title]').forEach(el => el.onchange = () => { const n = selectedNode(), i = +el.dataset.bTitle; if (!n) return; mutate(p => ({ ...p, nodes: p.nodes.map(x => x.id === n.id ? { ...x, data: { ...x.data, blocks: (x.data.blocks || []).map((b, j) => j === i ? { ...b, title: el.value } : b) } } : x) })); render() });
+    document.querySelectorAll('[data-b-del]').forEach(el => el.onclick = () => { const n = selectedNode(), i = +el.dataset.bDel; if (!n) return; mutate(p => ({ ...p, nodes: p.nodes.map(x => x.id === n.id ? { ...x, data: { ...x.data, blocks: (x.data.blocks || []).filter((_, j) => j !== i) } } : x) })); render() });
+    document.querySelectorAll('[data-t-head]').forEach(el => el.onchange = () => { const [i, j] = el.dataset.tHead.split(':').map(Number), n = selectedNode(); mutate(p => ({ ...p, nodes: p.nodes.map(x => { if (x.id !== n.id) return x; const bs = cp(x.data.blocks); bs[i].headers[j] = el.value; return { ...x, data: { ...x.data, blocks: bs } } }) })); render() });
+    document.querySelectorAll('[data-t-cell]').forEach(el => el.onchange = () => { const [i, r, c2] = el.dataset.tCell.split(':').map(Number), n = selectedNode(); mutate(p => ({ ...p, nodes: p.nodes.map(x => { if (x.id !== n.id) return x; const bs = cp(x.data.blocks); bs[i].rows[r][c2] = el.value; return { ...x, data: { ...x.data, blocks: bs } } }) })); render() });
+    document.querySelectorAll('[data-t-row]').forEach(el => el.onclick = () => { const i = +el.dataset.tRow, n = selectedNode(); mutate(p => ({ ...p, nodes: p.nodes.map(x => { if (x.id !== n.id) return x; const bs = cp(x.data.blocks); bs[i].rows.push(new Array(bs[i].headers.length).fill('')); return { ...x, data: { ...x.data, blocks: bs } } }) })); render() });
+    document.querySelectorAll('[data-g-label]').forEach(el => el.onchange = () => { const [i, j] = el.dataset.gLabel.split(':').map(Number), n = selectedNode(); mutate(p => ({ ...p, nodes: p.nodes.map(x => { if (x.id !== n.id) return x; const bs = cp(x.data.blocks); bs[i].items[j].label = el.value; return { ...x, data: { ...x.data, blocks: bs } } }) })); render() });
+    document.querySelectorAll('[data-g-value]').forEach(el => el.onchange = () => { const [i, j] = el.dataset.gValue.split(':').map(Number), n = selectedNode(); mutate(p => ({ ...p, nodes: p.nodes.map(x => { if (x.id !== n.id) return x; const bs = cp(x.data.blocks); bs[i].items[j].value = Number(el.value) || 0; return { ...x, data: { ...x.data, blocks: bs } } }) })); render() });
+    document.querySelectorAll('[data-g-add]').forEach(el => el.onclick = () => { const i = +el.dataset.gAdd, n = selectedNode(); mutate(p => ({ ...p, nodes: p.nodes.map(x => { if (x.id !== n.id) return x; const bs = cp(x.data.blocks); bs[i].items.push({ label: 'New', value: 20 }); return { ...x, data: { ...x.data, blocks: bs } } }) })); render() });
+    document.querySelectorAll('[data-img-select]').forEach(el => el.onchange = () => { const i = +el.dataset.imgSelect, a = state.project.assets.find(x => x.id === el.value), n = selectedNode(); if (!n) return; mutate(p => ({ ...p, nodes: p.nodes.map(x => { if (x.id !== n.id) return x; const bs = cp(x.data.blocks); bs[i].assetId = el.value; bs[i].url = a?.url || ''; return { ...x, data: { ...x.data, blocks: bs } } }) })); render(); if (a?.url) requestAnimationFrame(() => fitNodeToImage(n.id)); });
+    document.querySelectorAll('[data-edge-del]').forEach(el => el.onclick = () => { const id = el.dataset.edgeDel; mutate(p => ({ ...p, edges: p.edges.filter(e => e.id !== id) })); render() });
+    const con = $('[data-connect]'); if (con) con.onchange = () => { const n = selectedNode(), id = con.value; if (!n || !id) return; if (state.project.edges.some(e => (e.source === n.id && e.target === id) || (e.source === id && e.target === n.id))) return; mutate(p => ({ ...p, edges: [...p.edges, { id: uid('edge'), source: n.id, target: id, label: 'Linked' }] })); render() };
+    document.querySelectorAll('[data-open-node]').forEach(el => el.onclick = () => { state.view = 'canvas'; state.selected = [el.dataset.openNode]; render(); focus() });
+    document.querySelectorAll('[data-asset-del]').forEach(el => el.onclick = () => { const id = el.dataset.assetDel; mutate(p => ({ ...p, assets: p.assets.filter(a => a.id !== id), nodes: p.nodes.map(n => { const d = { ...n.data, blocks: (n.data.blocks || []).map(b => b.assetId === id ? { ...b, assetId: '', url: '' } : b) }; return { ...n, data: d } }) })); render() });
+    const ds = $('[data-db-search]'); if (ds) ds.oninput = () => { state.dbSearch = ds.value; render() }; const df = $('[data-db-filter]'); if (df) df.onchange = () => { state.dbFilter = df.value; render() };
+    const menu = $('[data-menu]'); if (menu) document.querySelectorAll('[data-create]').forEach(b => b.onclick = () => addNode(b.dataset.create, state.menu.world.x, state.menu.world.y));
+    document.querySelectorAll('[data-menu-act]').forEach(b => b.onclick = () => { const a = b.dataset.menuAct; if (a === 'select') { if (state.menu.target) state.selected = [state.menu.target]; state.menu = null; render() } else if (a === 'dup') { duplicate(state.menu.target); state.menu = null } else if (a === 'del') { state.selected = [state.menu.target]; state.menu = null; deleteSelected() } else if (a === 'group') makeGroup(); else if (a === 'collection') makeCollection() });
+}
+
+function exportJson() { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(state.project, null, 2)], { type: 'application/json' })); a.download = 'langi-project.json'; a.click(); URL.revokeObjectURL(a.href); toast('Project exported') }
+function importJson(f) { const r = new FileReader(); r.onload = () => { try { const p = JSON.parse(r.result); if (!Array.isArray(p.nodes) || !Array.isArray(p.edges) || !Array.isArray(p.assets)) throw 1; commit({ ...p, collections: Array.isArray(p.collections) ? p.collections : [] }); state.selected = []; state.menu = null; toast('Project imported') } catch (e) { alert('Invalid Langi project file.') } }; r.readAsText(f) }
+
+window.addEventListener('pointerdown', e => { if (state.menu && !e.target.closest('[data-menu]')) { state.menu = null; render() } });
+window.addEventListener('keydown', e => {
+    const editing = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName);
+    if (e.key === 'Escape') { state.menu = null; state.marquee = null; state.actions = false; render(); return }
+    if (!editing && e.key === ' ') { state.space = true; e.preventDefault() }
+    if (editing) return;
+    if (e.key === 'Delete' && state.selected.length) deleteSelected();
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); if (state.history.length) { state.future.unshift(cp(state.project)); state.project = state.history.pop(); save(); render() } }
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'z') { e.preventDefault(); if (state.future.length) { state.history.push(cp(state.project)); state.project = state.future.shift(); save(); render() } }
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'd' && state.selected.length === 1) { e.preventDefault(); duplicate(state.selected[0]) }
+    if (e.shiftKey && e.key.toLowerCase() === 'a') { e.preventDefault(); state.menu = { x: 120, y: 70, type: 'canvas', target: null, world: { x: (300 - state.camera.x) / state.camera.z, y: (150 - state.camera.y) / state.camera.z } }; render() }
+});
+window.addEventListener('keyup', e => { if (e.key === ' ') state.space = false });
+window.addEventListener('blur', () => { state.space = false }); // Fix getting stuck panning
+window.addEventListener('resize', () => { renderCanvasOnly(); });
+
+// Centralized pointer movement to survive DOM re-renders and enable smooth dragging
+window.addEventListener('pointermove', e => {
+    if (state.connect) {
+        const p = screenToWorld(e.clientX, e.clientY);
+        state.connect.mx = p.x; state.connect.my = p.y;
+        renderCanvasOnly();
+        return;
+    }
+    if (state.pan) { state.camera.x = state.pan.cx + e.clientX - state.pan.sx; state.camera.y = state.pan.cy + e.clientY - state.pan.sy; renderCanvasOnly(); return; }
+    if (state.drag) {
+        const dx = (e.clientX - state.drag.sx) / state.camera.z, dy = (e.clientY - state.drag.sy) / state.camera.z;
+        if (Math.abs(dx) + Math.abs(dy) > 2) state.marqueeMoved = true;
+        state.project.nodes.forEach(n => {
+            if (state.drag.starts[n.id]) {
+                n.x = state.drag.starts[n.id].x + dx; n.y = state.drag.starts[n.id].y + dy;
+                const el = document.querySelector(`[data-node="${n.id}"]`);
+                if (el) { el.style.left = n.x + 'px'; el.style.top = n.y + 'px'; }
+            }
+        });
+        const w = document.querySelector('.world');
+        if (w) { const svg = w.querySelector('svg'); if (svg) svg.outerHTML = edgesHtml(state.project.edges, state.project.nodes); }
+        return;
+    }
+    if (state.marquee) {
+        const p = screenToWorld(e.clientX, e.clientY);
+        state.marquee.ex = p.x; state.marquee.ey = p.y; state.marqueeMoved = true;
+        let box = document.querySelector('.select-box');
+        if (!box) { box = document.createElement('div'); box.className = 'select-box'; const canvas = document.querySelector('.canvas'); if (canvas) canvas.appendChild(box); }
+        if (box) { box.style.left = Math.min(state.marquee.sx, state.marquee.ex) * state.camera.z + state.camera.x + 'px'; box.style.top = Math.min(state.marquee.sy, state.marquee.ey) * state.camera.z + state.camera.y + 'px'; box.style.width = Math.abs(state.marquee.ex - state.marquee.sx) * state.camera.z + 'px'; box.style.height = Math.abs(state.marquee.ey - state.marquee.sy) * state.camera.z + 'px'; }
+    }
+});
+
+window.addEventListener('pointerup', e => {
+    if (state.connect) {
+        const hit = document.elementFromPoint(e.clientX, e.clientY);
+        const port = hit?.closest('[data-port]');
+        const source = state.connect.source;
+        const target = port?.dataset.port === 'input' ? port.dataset.node : null;
+        if (target && target !== source && !state.project.edges.some(x => x.source === source && x.target === target)) {
+            const next = { id: uid('edge'), source, target, label: 'Linked' };
+            state.history.push(cp(state.project));
+            if (state.history.length > 50) state.history.shift();
+            state.future = [];
+            state.project = { ...state.project, edges: [...state.project.edges, next] };
+            save();
+            toast('Connection created');
+        }
+        state.connect = null;
+        document.querySelector('.canvas')?.classList.remove('connecting');
+        render();
+        return;
+    }
+    if (state.pan) { state.pan = null; return; }
+    if (state.drag) {
+        if (state.marqueeMoved) { save(); state.history.push(cp(state.project)); if (state.history.length > 50) state.history.shift(); state.future = []; }
+        state.drag = null; render(); return;
+    }
+    if (state.marquee) {
+        const ids = boxIds(state.marquee), final = state.marquee.shift ? [...new Set([...state.selected, ...ids])] : ids;
+        state.selected = final; state.marquee = null;
+        if (state.marqueeMoved && final.length) state.actions = true;
+        render();
+    }
+});
+
+const asset = document.createElement('input'); asset.type = 'file'; asset.id = 'asset-file'; asset.accept = 'image/*'; asset.multiple = true; asset.hidden = true;
+asset.onchange = () => { const fs = [...asset.files]; Promise.all(fs.map(f => new Promise(res => { const r = new FileReader(); r.onload = () => res({ id: uid('asset'), name: f.name, type: 'Image', url: r.result }); r.readAsDataURL(f) }))).then(items => { if (items.length) { mutate(p => ({ ...p, assets: [...p.assets, ...items] })); toast(items.length + ' image' + (items.length > 1 ? 's' : '') + ' added') } }); asset.value = '' };
+document.body.appendChild(asset);
+const jf = document.createElement('input'); jf.type = 'file'; jf.id = 'json-file'; jf.accept = '.json'; jf.hidden = true;
+jf.onchange = () => { if (jf.files[0]) importJson(jf.files[0]); jf.value = '' };
+document.body.appendChild(jf);
+
+render();
+requestAnimationFrame(() => { if (!saved && state.view === 'canvas') fit(); else renderCanvasOnly(); state.project.nodes.forEach(n => { if ((n.data?.blocks || []).some(b => b.type === 'image' && b.url)) fitNodeToImage(n.id); }); });
+})();
+</script>
+</body>
+</html>
