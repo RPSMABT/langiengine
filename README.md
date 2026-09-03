@@ -32,3 +32,4 @@ Linktree
 Status
 
 Langi Engine is a work in progress and is actively being developed.
+* Note this project is entirely vibe coded 
