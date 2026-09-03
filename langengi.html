@@ -19,7 +19,7 @@ button{cursor:pointer;color:inherit}
 .tabs{display:flex;gap:2px;background:#1e2227;border:1px solid #3b4249;border-radius:8px;padding:2px}
 .tabs button{border:0;background:transparent;border-radius:6px;padding:7px 12px;color:#929ba4}
 .tabs button.active{background:#353a41;color:#eef1f4}
-.status{font-size:10px;color:#7d8790;margin-left:5px}
+.status{display:none}
 .tools{display:flex;gap:5px}
 .tool{height:32px;padding:0 10px;border:1px solid #4a5159;background:#30353b;border-radius:7px}
 .tool:hover{background:#3a4047}
@@ -33,22 +33,26 @@ button{cursor:pointer;color:inherit}
 .canvas.connecting{cursor:crosshair}
 .grid{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(55,62,69,.075) 1px,transparent 1px),linear-gradient(90deg,rgba(55,62,69,.075) 1px,transparent 1px)}
 .world{position:absolute;left:0;top:0;transform-origin:0 0}
-.world svg{position:absolute;left:0;top:0;overflow:visible;pointer-events:none;z-index:1;width:10000px;height:10000px}
-.node{position:absolute;width:320px;z-index:2;background:#fff;color:#252a30;border:1px solid #d2d7dc;border-radius:10px;box-shadow:0 5px 16px rgba(20,25,30,.11),0 1px 2px rgba(20,25,30,.08);overflow:hidden;user-select:none}
+.edge-overlay{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:1}.world svg{display:none}
+.node{position:absolute;width:320px;z-index:2;background:#fff;color:#252a30;border:1px solid #d2d7dc;border-radius:10px;box-shadow:0 5px 16px rgba(20,25,30,.11),0 1px 2px rgba(20,25,30,.08);overflow:visible;user-select:none}
 .node.selected{border-color:#788fa8;box-shadow:0 0 0 2px rgba(120,143,168,.22),0 8px 20px rgba(20,25,30,.14)}
-.head{height:40px;padding:0 11px;display:flex;align-items:center;gap:8px;background:#f8f9fa;border-bottom:1px solid #e4e7ea}
+.head{height:40px;padding:0 11px;display:flex;align-items:center;gap:8px;background:#f8f9fa;border-bottom:1px solid #e4e7ea;border-radius:9px 9px 0 0;overflow:hidden}
 .type{font-size:11px}
 .node-name{font-weight:650;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .badge{margin-left:auto;padding:2px 5px;border:1px solid #d9dde1;background:#f1f3f5;border-radius:5px;font-size:9px;color:#6d7680}
-.body{padding:10px}
+.body{padding:10px;border-radius:0 0 9px 9px;overflow:hidden}
 .desc{font-size:11px;line-height:1.5;color:#626b75;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
 .meta{margin-top:7px;color:#89929b;font-size:10px}
 .port{position:absolute;top:50%;width:11px;height:11px;margin-top:-5px;border-radius:50%;z-index:8;cursor:crosshair;box-shadow:0 0 0 2px rgba(255,255,255,.92),0 1px 3px rgba(0,0,0,.16)}
 .port.input{left:-6px;background:#e05252;border:2px solid #b62f2f}
 .port.output{right:-6px;background:#3c82da;border:2px solid #245da8}
 .port.output:hover,.port.input:hover{transform:scale(1.25)}
+.resize-handle{position:absolute;width:10px;height:10px;z-index:12;background:#fff;border:2px solid #6d8298;border-radius:3px;opacity:0;transition:opacity .12s;box-shadow:0 1px 3px rgba(20,25,30,.18)}
+.node.selected .resize-handle{opacity:1}.resize-handle:hover{background:#dfe8f1}.resize-handle.br{right:3px;bottom:3px;cursor:nwse-resize}.resize-handle.bl{left:3px;bottom:3px;cursor:nesw-resize}.resize-handle.tr{right:3px;top:3px;cursor:nesw-resize}.resize-handle.tl{left:3px;top:3px;cursor:nwse-resize}
+.node.image-node .body{padding:7px;overflow:hidden;border-radius:0 0 9px 9px}.node.image-node .body img{display:block;width:100%;height:100%;object-fit:contain;border-radius:6px;background:#eef1f4;user-select:none}.node.image-node .image-placeholder{min-height:120px;display:grid;place-items:center;color:#7e8994;border:1px dashed #cfd6dd;border-radius:6px;background:#f5f7f9}.node.image-node.image-collapsed{height:auto!important}.node.image-node.image-collapsed .body{display:none}.image-toggle{height:30px;padding:0 10px;display:flex;align-items:center;gap:7px;background:#f7f8f9;border-top:1px solid #e4e7ea;color:#69737c;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;user-select:none}.image-toggle:hover{background:#eef1f4}.image-toggle .chev{margin-left:auto;font-size:12px;color:#7d8790}.node.image-node.image-expanded .body{display:block}
+.entity-create{position:relative;display:flex;gap:5px;align-items:center}.entity-select{height:32px;min-width:118px;padding:0 8px;border:1px solid #4a5159;background:#30353b;color:#e6eaed;border-radius:7px}.entity-select:focus{outline:1px solid #738aa3;outline-offset:1px}.entity-create-menu{position:fixed;z-index:2500;width:190px;background:#252a30;border:1px solid #48505a;border-radius:8px;box-shadow:0 18px 48px rgba(0,0,0,.4);padding:5px}.entity-create-menu .menu-row{height:32px}
 .connection-preview{pointer-events:none;stroke:#49b77b;stroke-width:3;stroke-dasharray:7 6;fill:none;opacity:.9}
-.connection-line{pointer-events:none;stroke:#32a965;stroke-width:3.5;fill:none;filter:drop-shadow(0 1px 1px rgba(30,80,50,.18))}.connection-arrow{fill:#32a965}
+.connection-line{pointer-events:none;stroke:#28a85d;stroke-width:4;fill:none;filter:drop-shadow(0 1px 1px rgba(30,80,50,.2))}.connection-hit{pointer-events:stroke;stroke:transparent;stroke-width:14;fill:none}.connection-selected{stroke:#1f8d4d;stroke-width:5}
 .connection-label{pointer-events:none;fill:#3e9f68;font-size:10px}
 .group{background:rgba(239,242,245,.66);border:1px dashed #a5aeb8;box-shadow:none}
 .group-title{position:absolute;left:12px;top:10px;font-weight:700;font-size:11px;color:#68727c}
@@ -62,7 +66,7 @@ button{cursor:pointer;color:inherit}
 .bar-fill{height:100%;background:#9aaec4}
 .block img{display:block;width:100%;height:auto;max-height:none;object-fit:contain;border-radius:5px}.image-block{padding-bottom:8px}.image-block img{background:#eef1f4}
 .toolbar{position:absolute;top:10px;left:10px;z-index:20;display:flex;gap:4px;padding:4px;background:rgba(40,45,50,.95);border:1px solid #485058;border-radius:8px}
-.hint{position:absolute;bottom:10px;left:10px;z-index:20;background:rgba(40,45,50,.95);border:1px solid #485058;border-radius:7px;padding:7px 9px;color:#a4adb6;font-size:10px}
+.hint{display:none}
 .select-box{position:absolute;z-index:15;border:1px solid #7694b4;background:rgba(118,148,180,.13);pointer-events:none}
 .select-actions{position:absolute;z-index:25;left:50%;bottom:14px;transform:translateX(-50%);display:flex;gap:5px;align-items:center;background:rgba(40,45,50,.97);border:1px solid #485058;border-radius:8px;padding:5px}
 .select-actions .count{padding:0 6px;color:#a6afb8;font-size:10px}
@@ -76,7 +80,7 @@ button{cursor:pointer;color:inherit}
 .itab{display:flex;border-bottom:1px solid #40474f}
 .itab button{flex:1;height:36px;border:0;background:transparent;color:#8b949d}
 .itab button.active{background:#30353b;color:#eef2f5;border-bottom:2px solid #9aacbf}
-.panel{flex:1;min-height:0;overflow:auto;padding:13px}
+.panel{flex:1;min-height:0;overflow:auto;padding:13px}.node-type-row{display:flex;gap:8px;align-items:center;margin-bottom:12px}.node-type-row .inp{flex:1}.type-swatch{width:30px;height:30px;display:grid;place-items:center;border:1px solid #3e464e;background:#1e2328;border-radius:6px}
 .field{margin-bottom:11px}
 .field label{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.09em;color:#7f8992;margin-bottom:5px}
 .inp{width:100%;background:#1e2328;border:1px solid #3e464e;color:#eef2f5;border-radius:6px;padding:8px}
@@ -100,12 +104,14 @@ button{cursor:pointer;color:inherit}
 .db td{padding:10px;border-top:1px solid #343a41;font-size:11px;color:#cad0d5}
 .db tr{cursor:pointer}
 .db tr:hover td{background:#2a2f35}
+.db-check{width:38px;text-align:center}.db-check input{accent-color:#7b95b2;width:15px;height:15px}
+.db-layout{display:grid;grid-template-columns:220px minmax(0,1fr);gap:14px;align-items:start}.db-sidebar{background:#292e34;border:1px solid #414850;border-radius:9px;padding:8px;position:sticky;top:0}.db-sidebar-head{display:flex;align-items:center;justify-content:space-between;padding:5px 5px 8px}.db-sidebar-title{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:#8b949d;font-weight:700}.db-list{display:flex;flex-direction:column;gap:4px}.db-item{width:100%;border:1px solid transparent;background:transparent;color:#c9d0d6;border-radius:7px;padding:9px;text-align:left;cursor:pointer}.db-item:hover{background:#343a42}.db-item.active{background:#353b43;border-color:#525b65}.db-item-name{font-size:11px;font-weight:650}.db-item-sub{font-size:9px;color:#7e8892;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.db-main{min-width:0}.db-controls{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-bottom:12px}.db-title-input{flex:1;min-width:180px;background:transparent;border:1px solid transparent;color:#e9edf1;font-size:17px;font-weight:650;padding:3px 5px;border-radius:6px}.db-title-input:hover,.db-title-input:focus{border-color:#414950;background:#181d22;outline:none}.db-empty{border:1px dashed #4c545d;border-radius:8px;padding:35px;text-align:center;color:#808a94;font-size:11px}.db-create{display:flex;gap:6px}.db-create .page-input{width:190px}.db-member-note{font-size:10px;color:#858e97;margin:0 0 10px}.modal-backdrop{position:fixed;inset:0;z-index:5000;background:rgba(10,12,15,.62);display:flex;align-items:center;justify-content:center;padding:24px}.info-modal{width:min(760px,calc(100vw - 48px));max-height:min(80vh,760px);overflow:auto;background:#292e34;border:1px solid #4a525b;border-radius:12px;box-shadow:0 24px 70px rgba(0,0,0,.5)}.info-head{display:flex;justify-content:space-between;align-items:center;padding:15px 16px;border-bottom:1px solid #414850}.info-title{font-size:14px;font-weight:700}.info-close{height:30px;width:30px;padding:0}.info-body{padding:16px}.info-section{background:#242a30;border:1px solid #414950;border-radius:8px;padding:12px;margin-bottom:10px}.info-section h3{margin:0 0 8px;font-size:11px;color:#dce2e7}.info-section p{margin:0;color:#9ea7af;line-height:1.55;font-size:10px}.shortcut-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.shortcut-row{display:flex;justify-content:space-between;gap:12px;padding:8px 9px;background:#1f252a;border:1px solid #343b42;border-radius:6px;font-size:10px;color:#bfc7ce}.shortcut-key{color:#e1e6ea;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.top-info-actions{display:flex;gap:5px}
 .assets{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
 .asset{background:#292e34;border:1px solid #414850;border-radius:8px;overflow:hidden}
 .asset-img{aspect-ratio:4/3;background:#171b20}
 .asset-img img{width:100%;height:100%;display:block;object-fit:cover}
 .asset-meta{display:flex;gap:8px;align-items:center;padding:9px}
-.asset-name{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px}
+.asset-name{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px}.asset-card-actions{display:flex;gap:5px;align-items:center}.asset-toolbar{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-bottom:14px}.asset-layout{display:grid;grid-template-columns:210px minmax(0,1fr);gap:14px;align-items:start}.asset-sidebar{background:#292e34;border:1px solid #414850;border-radius:9px;padding:8px;position:sticky;top:0}.asset-sidebar-head{display:flex;align-items:center;justify-content:space-between;padding:5px 5px 8px}.asset-sidebar-title{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:#8b949d;font-weight:700}.asset-folder-list{display:flex;flex-direction:column;gap:4px}.asset-folder{width:100%;border:1px solid transparent;background:transparent;color:#c9d0d6;border-radius:7px;padding:9px;text-align:left;cursor:pointer;display:flex;align-items:center;gap:7px}.asset-folder:hover{background:#343a42}.asset-folder.active{background:#353b43;border-color:#525b65}.asset-folder-name{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px}.asset-folder-count{font-size:9px;color:#7e8892}.asset-main{min-width:0}.asset-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}.asset-card{background:#292e34;border:1px solid #414850;border-radius:8px;overflow:hidden}.asset-img{aspect-ratio:4/3;background:#171b20}.asset-img img{width:100%;height:100%;display:block;object-fit:contain}.asset-meta{display:flex;gap:8px;align-items:center;padding:9px}.asset-folder-label{font-size:9px;color:#7f8992;padding:0 9px 8px}.asset-empty{border:1px dashed #4c545d;border-radius:8px;padding:42px;text-align:center;color:#808a94;font-size:11px}.asset-editor-modal{width:min(980px,calc(100vw - 40px));height:min(88vh,820px);display:flex;flex-direction:column}.asset-editor-body{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:14px;padding:14px;min-height:0;flex:1}.asset-editor-preview{min-width:0;min-height:0;background:#161b20;border:1px solid #414950;border-radius:9px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}.asset-editor-preview canvas{max-width:100%;max-height:100%;width:auto;height:auto;image-rendering:auto}.asset-editor-panel{overflow:auto;background:#242a30;border:1px solid #414950;border-radius:9px;padding:11px}.asset-editor-actions{display:flex;justify-content:flex-end;gap:7px;padding:11px 14px;border-top:1px solid #414850}.range-note{font-size:9px;color:#7e8892;margin-top:-5px;margin-bottom:8px}.editor-dims{display:grid;grid-template-columns:1fr 1fr;gap:7px}.editor-preview-badge{position:absolute;left:9px;bottom:9px;padding:5px 7px;border-radius:6px;background:rgba(31,36,41,.9);border:1px solid #46505a;color:#9aa4ad;font-size:9px}.asset-rename{display:flex;gap:6px}.asset-rename .inp{min-width:0}.asset-name-inline{width:100%;background:#181d22;border:1px solid #3e464e;color:#eef2f5;border-radius:6px;padding:7px}.asset-editor-hint{font-size:9px;color:#808a94;line-height:1.5;margin-top:6px} .asset-card.selected{border-color:#718aa4;box-shadow:0 0 0 1px rgba(113,138,164,.25)}
 .empty{border:1px dashed #4c545d;border-radius:8px;padding:42px;text-align:center;color:#808a94;font-size:11px}
 .menu{position:fixed;z-index:2000;width:275px;background:#252a30;border:1px solid #48505a;border-radius:9px;box-shadow:0 18px 48px rgba(0,0,0,.4);padding:5px}
 .menu-head{padding:7px 8px 4px;color:#737d86;font-size:9px;text-transform:uppercase;letter-spacing:.12em}
@@ -115,6 +121,32 @@ button{cursor:pointer;color:inherit}
 .shortcut{margin-left:auto;font-size:10px;color:#808a94}
 .sep{height:1px;background:#3b4249;margin:5px 0}
 .toast{position:fixed;right:55px;bottom:12px;z-index:3000;padding:8px 10px;background:#2c3137;border:1px solid #4a5159;border-radius:7px;color:#cbd2d9;font-size:10px}
+
+/* === vNext workspace tools === */
+.canvas.grid-off .grid{display:none}
+.group{z-index:0!important}
+.node.locked{opacity:.78}.node.locked .resize-handle{display:none}
+.node.child-node{box-shadow:0 4px 14px rgba(20,25,30,.10)}
+.canvas-nav{position:absolute;left:10px;top:58px;width:230px;max-height:calc(100% - 120px);z-index:35;background:rgba(38,43,49,.97);border:1px solid #49515a;border-radius:9px;box-shadow:0 14px 38px rgba(0,0,0,.24);overflow:auto;color:#dce2e7}
+.canvas-nav.closed{display:none}.nav-head{display:flex;gap:6px;align-items:center;padding:8px;border-bottom:1px solid #414850}.nav-title{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#9aa3ac;font-weight:700;flex:1}.nav-search-wrap{padding:8px;border-bottom:1px solid #3c444c}.nav-search{width:100%;background:#1e2328;border:1px solid #3f474f;color:#eef2f5;border-radius:6px;padding:7px 8px}.nav-group{padding:7px 8px 3px;color:#7f8992;font-size:9px;text-transform:uppercase;letter-spacing:.08em}.nav-item{width:100%;border:0;background:transparent;color:#cbd3da;padding:7px 8px;display:flex;align-items:center;gap:7px;text-align:left;border-radius:6px}.nav-item:hover{background:#343a42}.nav-item.active{background:#3a4149;color:#fff}.nav-item .nicon{width:17px;text-align:center}.nav-item .nname{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.nav-lock{margin-left:auto;font-size:9px;color:#808a94}
+.minimap{position:absolute;right:12px;bottom:12px;width:220px;height:150px;z-index:25;background:rgba(39,44,50,.93);border:1px solid #4b535c;border-radius:9px;overflow:hidden;box-shadow:0 12px 30px rgba(0,0,0,.2)}.minimap canvas{display:block;width:100%;height:100%}
+.command-overlay,.type-overlay{position:fixed;inset:0;z-index:6000;background:rgba(8,10,12,.55);display:flex;align-items:flex-start;justify-content:center;padding-top:90px}.command-modal,.type-modal{width:min(720px,calc(100vw - 40px));background:#292e34;border:1px solid #4a525b;border-radius:11px;box-shadow:0 25px 80px rgba(0,0,0,.55);overflow:hidden}.command-input{width:100%;background:#1b2025;border:0;border-bottom:1px solid #414850;color:#eef2f5;padding:16px;font-size:14px;outline:none}.command-list{max-height:440px;overflow:auto;padding:7px}.command-item{width:100%;height:40px;border:0;background:transparent;color:#cfd5db;border-radius:7px;display:flex;align-items:center;justify-content:space-between;padding:0 11px;text-align:left}.command-item:hover{background:#373e46}.command-item small{color:#808a94}
+.timeline{display:flex;flex-direction:column;gap:10px}.timeline-line{position:relative;padding-left:26px}.timeline-line:before{content:'';position:absolute;left:9px;top:0;bottom:-10px;width:2px;background:#46505a}.timeline-dot{position:absolute;left:4px;top:7px;width:12px;height:12px;background:#7990aa;border:2px solid #252a30;border-radius:50%;box-shadow:0 0 0 2px #526070}.timeline-card{background:#292e34;border:1px solid #414950;border-radius:8px;padding:10px}
+.db-views{display:flex;flex-direction:column;gap:4px;margin-top:10px;padding-top:10px;border-top:1px solid #3c444c}.db-view-item{display:flex;align-items:center;gap:4px}.db-view-item button{flex:1;text-align:left}
+.edge-editor{border-top:1px solid #40474f;margin-top:10px;padding-top:10px}.edge-swatch{width:100%;height:28px;padding:0 4px;border:1px solid #414950;background:#1f2429;border-radius:6px}
+.node blockquote{margin:7px 0;padding:7px 9px;border-left:3px solid #9aacbf;background:#f2f5f7;color:#5b6670;font-size:10px}.node .node-heading{font-weight:700;font-size:12px;margin-top:8px}.node .check-row{font-size:10px;color:#69737c;margin:4px 0}.node .divider{height:1px;background:#dfe3e7;margin:8px 0}
+.toolbar .tool.small.active{background:#59697e;border-color:#70839a}
+
+.fullscreen-active .fullscreen-btn::after{content:" ✓"}
+.canvas-bg-control{display:flex;align-items:center;gap:6px;height:32px;padding:0 7px;border:1px solid #4a5159;background:#30353b;border-radius:7px;color:#9ea7af;font-size:10px}
+.canvas-bg-control input[type=color]{width:22px;height:22px;padding:0;border:1px solid #5a626b;border-radius:5px;background:transparent;cursor:pointer}
+.social-link-top{height:32px;padding:0 9px;border:1px solid #4a5159;background:#30353b;border-radius:7px;color:#cbd2d8;text-decoration:none;display:inline-flex;align-items:center}
+.social-link-top:hover{background:#3a4047}
+.help-modal{width:min(920px,calc(100vw - 36px));max-height:min(88vh,860px)}
+.help-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.help-card{background:#242a30;border:1px solid #414950;border-radius:8px;padding:12px}.help-card h3{margin:0 0 7px;font-size:11px;color:#dce2e7}.help-card p,.help-card li{font-size:10px;line-height:1.55;color:#9ea7af}.help-card ul{margin:0;padding-left:17px}.shortcut-grid{display:grid;grid-template-columns:1fr;gap:6px}.shortcut-row{display:flex;justify-content:space-between;gap:12px;padding:7px 8px;background:#1f252a;border:1px solid #343b42;border-radius:6px;font-size:10px;color:#bfc7ce}.shortcut-key{color:#e1e6ea;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+@media (max-width:1050px){.tools .social-link-top{display:none}}
+@media (max-width:700px){.help-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -126,7 +158,7 @@ button{cursor:pointer;color:inherit}
 const TYPES = {
     character: ['Character', '●', '#688dbb'], lore: ['Lore', '▤', '#9e8350'], spell: ['Ability', '✦', '#8b78b7'],
     faction: ['Faction', '◆', '#579582'], location: ['Location', '⌖', '#5f8fa8'], item: ['Item', '◇', '#a38f59'],
-    quest: ['Quest', '⚑', '#a77488'], group: ['Frame', '□', '#818c98']
+    quest: ['Quest', '⚑', '#a77488'], image: ['Image', '▧', '#6f91a8'], group: ['Frame', '□', '#818c98']
 };
 
 const uid = p => p + '-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
@@ -151,10 +183,37 @@ try { saved = JSON.parse(localStorage.getItem('langi-fixed-final')) } catch (e) 
 const S = saved && Array.isArray(saved.nodes) ? saved : cp(seed);
 
 const state = {
-    project: S, view: 'canvas', selected: [], tab: 'details',
+    project: S, view: 'canvas', selected: [], tab: 'details', dbSearch: '', dbFilter: 'all', dbStatus: 'all', activeDatabase: 'default',
+    navOpen: true, navSearch: '', minimap: true, gridOn: true, snapOn: false, gridSize: 30, selectedEdge: null,
+    timelineSearch: '', commandPalette: false, commandSearch: '', typeManager: false, assetFolder: 'root', assetSearch: '', assetEditor: null,
     camera: { x: 90, y: 55, z: 0.78 }, menu: null, marquee: null, marqueeMoved: false,
-    pan: null, drag: null, connect: null, space: false, actions: false, history: [], future: [], toast: ''
+    pan: null, drag: null, resize: null, connect: null, space: false, actions: false, entityMenu: false, infoModal: null, history: [], future: [], toast: ''
 };
+
+function ensureDatabaseSchema(){
+    if (!Array.isArray(state.project.databases) || !state.project.databases.length) {
+        state.project.databases = [{ id:'default', name:'Default Database', description:'All project entities', nodeIds:null, system:true }];
+        save();
+    }
+    if (!state.project.databases.some(d => d.id === 'default')) state.project.databases.unshift({ id:'default', name:'Default Database', description:'All project entities', nodeIds:null, system:true });
+    state.project.databases.forEach(d => { if (!Array.isArray(d.nodeIds) && d.nodeIds !== null) d.nodeIds=[]; if (!d.description) d.description=d.system?'All project entities':'Custom entity database'; });
+    if (!state.project.databases.some(d => d.id === state.activeDatabase)) state.activeDatabase = 'default';
+}
+ensureDatabaseSchema();
+function ensureFeatureSchema(){
+    if(!state.project.canvasBackground) state.project.canvasBackground='#f6f7f8';
+    if(!Array.isArray(state.project.timeline)) state.project.timeline=[];
+    if(!Array.isArray(state.project.savedViews)) state.project.savedViews=[];
+    if(!Array.isArray(state.project.customTypes)) state.project.customTypes=[];
+    state.project.nodes.forEach(n=>{ if(n.parentId===undefined) n.parentId=null; if(n.locked===undefined) n.locked=false; });
+    state.project.edges.forEach(e=>{ if(!e.color)e.color='#28a85d'; if(!e.style)e.style='solid'; if(!e.label)e.label='Linked'; });
+    state.project.customTypes.forEach(t=>{ if(t&&t.id&&!TYPES[t.id]) TYPES[t.id]=[t.name||'Custom',t.icon||'◆',t.color||'#7b8fa3']; });
+    if(!Array.isArray(state.project.assetFolders) || !state.project.assetFolders.length) state.project.assetFolders=[{id:'root',name:'Root',system:true}];
+    if(!state.project.assetFolders.some(f=>f.id==='root')) state.project.assetFolders.unshift({id:'root',name:'Root',system:true});
+    state.project.assets.forEach(a=>{ if(!a.folderId) a.folderId='root'; if(!a.type) a.type='Image'; });
+    if(!state.project.assetFolders.some(f=>f.id===state.assetFolder)) state.assetFolder='root';
+}
+ensureFeatureSchema();
 
 const $ = s => document.querySelector(s);
 const app = $('#app');
@@ -169,9 +228,16 @@ function selectedNode() { return state.selected.length === 1 ? state.project.nod
 function esc(s) { return String(s ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])) }
 function screenToWorld(clientX, clientY) { const r = $('.canvas').getBoundingClientRect(); return { x: (clientX - r.left - state.camera.x) / state.camera.z, y: (clientY - r.top - state.camera.y) / state.camera.z } }
 function addNode(type, x, y) {
-    const n = { id: uid(type), type, x: x ?? ((340 - state.camera.x) / state.camera.z), y: y ?? ((160 - state.camera.y) / state.camera.z), width: type === 'group' ? 420 : 320, height: type === 'group' ? 280 : 190, data: { ...blank(), name: 'New ' + TYPES[type][0], tag: TYPES[type][0] } };
+    const isGroup = type === 'group', isImage = type === 'image';
+    const firstAsset = state.project.assets[0];
+    const data = { ...blank(), name: isImage ? 'New Image' : 'New ' + TYPES[type][0], tag: TYPES[type][0], ...(isImage ? { imageExpanded: false } : {}) };
+    if (isImage && firstAsset) {
+        data.blocks = [{ id: uid('block'), type: 'image', title: 'Image', assetId: firstAsset.id, url: firstAsset.url }];
+    }
+    const n = { id: uid(type), type, x: x ?? ((340 - state.camera.x) / state.camera.z), y: y ?? ((160 - state.camera.y) / state.camera.z), width: isGroup ? 420 : (isImage ? 360 : 320), height: isGroup ? 280 : (isImage ? 240 : 190), data };
     mutate(p => ({ ...p, nodes: [n, ...p.nodes] }));
-    state.selected = [n.id]; state.tab = 'details'; state.menu = null; render();
+    state.selected = [n.id]; state.tab = isImage ? 'content' : 'details'; state.menu = null; state.entityMenu = false; render();
+    if (isImage && firstAsset?.url) requestAnimationFrame(() => fitNodeToImage(n.id));
 }
 
 function deleteSelected() {
@@ -198,7 +264,7 @@ function makeGroup() {
     const ns = state.project.nodes.filter(n => state.selected.includes(n.id)); if (!ns.length) return;
     const minX = Math.min(...ns.map(n => n.x)) - 24, minY = Math.min(...ns.map(n => n.y)) - 46, maxX = Math.max(...ns.map(n => n.x + n.width)) + 24, maxY = Math.max(...ns.map(n => n.y + n.height)) + 24;
     const g = { id: uid('group'), type: 'group', x: minX, y: minY, width: maxX - minX, height: maxY - minY, data: { ...blank(), name: 'New Frame', content: 'Grouped entities.' } };
-    mutate(p => ({ ...p, nodes: [g, ...p.nodes] }));
+    mutate(p => ({ ...p, nodes: [g, ...p.nodes].map(x=>state.selected.includes(x.id)&&x.type!=='group'?{...x,parentId:g.id}:x) }));
     state.selected = [g.id]; state.actions = false; state.menu = null; render();
 }
 
@@ -246,6 +312,8 @@ function renderCanvasOnly() {
     }
     const zl = $('[data-zoom-label]');
     if (zl) zl.textContent = Math.round(state.camera.z * 100) + '%';
+    refreshEdgeOverlay();
+    if(state.minimap) drawMinimap();
 }
 
 function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
@@ -267,7 +335,7 @@ function fitNodeToImage(nodeId) {
         if (renderedImg) renderedImg.style.width = '100%';
         const measured = nodeEl ? nodeEl.scrollHeight : 0;
         const fallbackHeight = 40 + 20 + 66 + Math.round(targetWidth * ratio) + 18;
-        n.height = Math.max(190, Math.round(measured || fallbackHeight));
+        n.height = n.type === 'image' ? Math.max(180, Math.round(targetWidth * ratio + 60)) : Math.max(190, Math.round(measured || fallbackHeight));
         if (oldWidth !== n.width) n.x = Math.round(n.x);
         save();
         renderCanvasOnly();
@@ -278,33 +346,152 @@ function fitNodeToImage(nodeId) {
 }
 
 function blockHtml(b) {
-    if (b.type === 'table') return `<div class="block"><div class="block-title">${esc(b.title)}</div><table><thead><tr>${b.headers.map(h => `<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${b.rows.slice(0, 3).map(r => `<tr>${r.map(c => `<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
-    if (b.type === 'graph') {
-        const max = Math.max(1, ...b.items.map(x => Number(x.value) || 0));
-        return `<div class="block"><div class="block-title">${esc(b.title)}</div>${b.items.slice(0, 4).map(i => `<div class="bar-row"><div class="bar-head"><span>${esc(i.label)}</span><span>${Number(i.value) || 0}</span></div><div class="bar-track"><div class="bar-fill" style="width:${Math.max(0, Math.min(100, (Number(i.value) || 0) / max * 100))}%"></div></div></div>`).join('')}</div>`;
-    }
-    return `<div class="block image-block"><div class="block-title">${esc(b.title)}</div>${b.url ? `<img src="${b.url}" alt="">` : '<div class="muted">No image selected.</div>'}</div>`;
+    if(b.type==='table') return `<div class="block"><div class="block-title">${esc(b.title)}</div><table><thead><tr>${b.headers.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${b.rows.slice(0,4).map(r=>`<tr>${r.map(c=>`<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+    if(b.type==='graph'){const max=Math.max(1,...b.items.map(x=>Number(x.value)||0));return `<div class="block"><div class="block-title">${esc(b.title)}</div>${b.items.slice(0,5).map(i=>`<div class="bar-row"><div class="bar-head"><span>${esc(i.label)}</span><span>${Number(i.value)||0}</span></div><div class="bar-track"><div class="bar-fill" style="width:${Math.max(0,Math.min(100,(Number(i.value)||0)/max*100))}%"></div></div></div>`).join('')}</div>`}
+    if(b.type==='heading') return `<div class="block node-heading">${esc(b.text||'Heading')}</div>`;
+    if(b.type==='quote') return `<blockquote class="block">${esc(b.text||'Quote')}</blockquote>`;
+    if(b.type==='checklist') return `<div class="block"><div class="block-title">${esc(b.title||'Checklist')}</div>${(b.items||[]).map(i=>`<div class="check-row">${i.done?'☑':'☐'} ${esc(i.text||'Item')}</div>`).join('')}</div>`;
+    if(b.type==='divider') return `<div class="divider"></div>`;
+    return `<div class="block image-block"><div class="block-title">${esc(b.title||'Image')}</div>${b.url?`<img src="${b.url}" alt="">`:'<div class="muted">No image selected.</div>'}</div>`;
+}
+
+function activeDatabaseObj(){ return state.project.databases.find(d=>d.id===state.activeDatabase) || state.project.databases[0]; }
+
+function typeKeys(){ return Object.keys(TYPES).filter(k=>k!=='group'); }
+function typeDef(type){ return TYPES[type] || ['Custom','◆','#7b8fa3']; }
+function snapValue(v){ return state.snapOn ? Math.round(v/state.gridSize)*state.gridSize : v; }
+function toggleGrid(){ state.gridOn=!state.gridOn; render(); }
+function autoLayout(){
+    const nodes=state.project.nodes.filter(n=>n.type!=='group');
+    if(nodes.length<2){toast('Need at least two nodes');return;}
+    const ids=new Set(nodes.map(n=>n.id)); const indeg=new Map(nodes.map(n=>[n.id,0])); const out=new Map(nodes.map(n=>[n.id,[]]));
+    state.project.edges.forEach(e=>{if(ids.has(e.source)&&ids.has(e.target)){out.get(e.source).push(e.target);indeg.set(e.target,indeg.get(e.target)+1)}});
+    const layers=[]; let q=nodes.filter(n=>indeg.get(n.id)===0).map(n=>n.id), seen=new Set();
+    if(!q.length) q=[nodes[0].id];
+    while(q.length){const layer=[...q];layers.push(layer);q=[];layer.forEach(id=>{seen.add(id);(out.get(id)||[]).forEach(t=>{indeg.set(t,indeg.get(t)-1);if(indeg.get(t)===0)q.push(t)})})}
+    nodes.filter(n=>!seen.has(n.id)).forEach((n,i)=>{if(!layers.length)layers.push([]);layers[layers.length-1].push(n.id)});
+    state.history.push(cp(state.project));if(state.history.length>50)state.history.shift();state.future=[];
+    layers.forEach((layer,li)=>layer.forEach((id,ri)=>{const n=state.project.nodes.find(x=>x.id===id);if(n){n.x=snapValue(80+li*380);n.y=snapValue(90+ri*220)}}));save();render();toast('Graph organized');
+}
+function alignSelected(mode){
+    const ns=state.project.nodes.filter(n=>state.selected.includes(n.id));if(ns.length<2)return;const base=ns[0];
+    ns.slice(1).forEach(n=>{if(mode==='left')n.x=base.x;if(mode==='center')n.x=base.x+(base.width-n.width)/2;if(mode==='right')n.x=base.x+base.width-n.width;if(mode==='top')n.y=base.y;if(mode==='middle')n.y=base.y+(base.height-n.height)/2;if(mode==='bottom')n.y=base.y+base.height-n.height});
+    state.history.push(cp(state.project));if(state.history.length>50)state.history.shift();state.future=[];save();render();
+}
+function createTimelineEvent(){const n=selectedNode();state.project.timeline.push({id:uid('event'),year:new Date().getFullYear(),title:'New Event',description:'',nodeId:n?.id||''});state.history.push(cp(state.project));if(state.history.length>50)state.history.shift();state.future=[];save();render();}
+function deleteTimelineEvent(id){state.history.push(cp(state.project));state.project.timeline=state.project.timeline.filter(e=>e.id!==id);save();render();}
+function saveView(){const db=activeDatabaseObj();const v={id:uid('view'),name:'View '+(state.project.savedViews.length+1),databaseId:db?.id||'default',search:state.dbSearch||'',filter:state.dbFilter||'all',status:state.dbStatus||'all'};state.project.savedViews.push(v);save();render();toast('View saved');}
+function applyView(v){state.activeDatabase=v.databaseId;state.dbSearch=v.search||'';state.dbFilter=v.filter||'all';state.dbStatus=v.status||'all';render();}
+function deleteView(id){state.project.savedViews=state.project.savedViews.filter(v=>v.id!==id);save();render();}
+function manageTypesHtml(){
+ const custom=state.project.customTypes||[];
+ return `<div class="type-overlay" data-type-overlay><section class="type-modal"><div class="info-head"><div class="info-title">Custom Node Types</div><button class="tool info-close" data-act="close-types">×</button></div><div class="info-body"><div class="info-section"><h3>Create reusable node type</h3><div class="split"><input class="inp" data-type-name placeholder="Type name"><input class="inp" data-type-icon placeholder="Icon" value="◆"></div><div class="split" style="margin-top:8px"><input class="inp" data-type-color type="color" value="#7b8fa3"><button class="tool primary" data-act="create-type">Create type</button></div></div><div class="info-section"><h3>Custom types</h3>${custom.length?custom.map(t=>`<div class="card-head"><span style="color:${esc(t.color||'#7b8fa3')};font-size:18px">${esc(t.icon||'◆')}</span><span style="flex:1">${esc(t.name)}</span><button class="tool small" data-type-delete="${t.id}">Delete</button></div>`).join(''):'<div class="muted">No custom node types yet.</div>'}</div></div></section></div>`;
+}
+function commandPaletteHtml(){
+ if(!state.commandPalette)return '';
+ const commands=[
+  ['Create Character','Add a character node','create-character'],['Create Location','Add a location node','create-location'],['Create Frame','Add a frame/group','create-group'],['Organize Graph','Automatically arrange connected nodes','layout'],['Toggle Grid','Show or hide the grid','grid'],['Toggle Snap','Snap nodes to grid','snap'],['Toggle Minimap','Show or hide minimap','minimap'],['Open Timeline','Open chronology','timeline'],['Open Database','Open databases','database'],['Manage Node Types','Create custom node types','types'],['Open Shortcuts','Show shortcuts','shortcuts']
+ ];
+ const q=(state.commandSearch||'').toLowerCase();const filtered=commands.filter(x=>(x[0]+' '+x[1]).toLowerCase().includes(q));
+ return `<div class="command-overlay" data-command-overlay><section class="command-modal"><input class="command-input" data-command-search autofocus placeholder="Type a command…" value="${esc(state.commandSearch||'')}"><div class="command-list">${filtered.length?filtered.map((x,i)=>`<button class="command-item" data-command-action="${x[2]}"><span>${esc(x[0])}</span><small>${esc(x[1])}</small></button>`).join(''):'<div class="muted" style="padding:20px">No commands found.</div>'}</div></section></div>`;
+}
+function navigatorHtml(){
+ const q=(state.navSearch||'').toLowerCase();const groups={};state.project.nodes.forEach(n=>{const k=typeDef(n.type)[0];if(!groups[k])groups[k]=[];if(!q||`${n.data.name} ${n.data.tag} ${n.data.content}`.toLowerCase().includes(q))groups[k].push(n)});
+ return `<aside class="canvas-nav ${state.navOpen?'':'closed'}"><div class="nav-head"><div class="nav-title">Project Navigator</div><button class="tool small" data-act="navigator">×</button></div><div class="nav-search-wrap"><input class="nav-search" data-nav-search placeholder="Search nodes…" value="${esc(state.navSearch||'')}"></div>${Object.entries(groups).map(([k,ns])=>`<div class="nav-group">${esc(k)} · ${ns.length}</div>${ns.map(n=>`<button class="nav-item ${state.selected.includes(n.id)?'active':''}" data-nav-node="${n.id}"><span class="nicon" style="color:${typeDef(n.type)[2]}">${typeDef(n.type)[1]}</span><span class="nname">${esc(n.data.name)}</span>${n.locked?'🔒':''}</button>`).join('')}`).join('')||'<div class="muted" style="padding:12px">No nodes found.</div>'}</aside>`;
+}
+function minimapHtml(){return `<div class="minimap" data-minimap-wrap><canvas data-minimap width="440" height="300"></canvas></div>`;}
+function getMinimapTransform(){
+ const cvs=document.querySelector('[data-minimap]'); const ns=state.project.nodes||[];
+ if(!cvs||!ns.length) return null;
+ const pad=24, W=cvs.width, H=cvs.height;
+ let minX=Math.min(...ns.map(n=>n.x)), minY=Math.min(...ns.map(n=>n.y));
+ let maxX=Math.max(...ns.map(n=>n.x+n.width)), maxY=Math.max(...ns.map(n=>n.y+n.height));
+ const spanX=Math.max(1,maxX-minX), spanY=Math.max(1,maxY-minY);
+ const scale=Math.min((W-pad*2)/spanX,(H-pad*2)/spanY);
+ const ox=pad+(W-pad*2-spanX*scale)/2-minX*scale;
+ const oy=pad+(H-pad*2-spanY*scale)/2-minY*scale;
+ return {cvs,pad,scale,ox,oy,minX,minY,maxX,maxY};
+}
+function worldToMinimap(t,x,y){return {x:t.ox+x*t.scale,y:t.oy+y*t.scale};}
+function minimapToWorld(t,x,y){return {x:(x-t.ox)/t.scale,y:(y-t.oy)/t.scale};}
+function drawMinimap(){
+ const t=getMinimapTransform(); if(!t)return; const {cvs}=t; const ctx=cvs.getContext('2d'); if(!ctx)return;
+ ctx.clearRect(0,0,cvs.width,cvs.height); ctx.fillStyle='#171c21'; ctx.fillRect(0,0,cvs.width,cvs.height);
+ const ns=state.project.nodes||[];
+ (state.project.edges||[]).forEach(e=>{const a=ns.find(n=>n.id===e.source),b=ns.find(n=>n.id===e.target);if(!a||!b)return;const p1=worldToMinimap(t,a.x+a.width,a.y+a.height/2),p2=worldToMinimap(t,b.x,b.y+b.height/2);ctx.strokeStyle='rgba(51,177,95,.7)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.bezierCurveTo((p1.x+p2.x)/2,p1.y,(p1.x+p2.x)/2,p2.y,p2.x,p2.y);ctx.stroke();});
+ ns.forEach(n=>{const p=worldToMinimap(t,n.x,n.y),w=Math.max(5,n.width*t.scale),h=Math.max(4,n.height*t.scale);ctx.fillStyle=n.type==='group'?'rgba(125,138,150,.25)':'rgba(119,144,168,.78)';ctx.fillRect(p.x,p.y,w,h);ctx.strokeStyle=state.selected.includes(n.id)?'#fff':'rgba(220,228,235,.38)';ctx.lineWidth=state.selected.includes(n.id)?3:1;ctx.strokeRect(p.x,p.y,w,h);});
+ const r=document.querySelector('.canvas')?.getBoundingClientRect(); if(!r)return;
+ const vx=(0-state.camera.x)/state.camera.z, vy=(0-state.camera.y)/state.camera.z, vw=r.width/state.camera.z, vh=r.height/state.camera.z;
+ const p=worldToMinimap(t,vx,vy), q=worldToMinimap(t,vx+vw,vy+vh);
+ ctx.fillStyle='rgba(143,165,188,.10)';ctx.fillRect(p.x,p.y,q.x-p.x,q.y-p.y);ctx.strokeStyle='#9db4ca';ctx.lineWidth=2;ctx.strokeRect(p.x,p.y,q.x-p.x,q.y-p.y);
+}
+function minimapNavigate(clientX,clientY){
+ const t=getMinimapTransform(); const r=t?.cvs.getBoundingClientRect(); const cr=document.querySelector('.canvas')?.getBoundingClientRect();
+ if(!t||!r||!cr)return;
+ const mx=(clientX-r.left)*(t.cvs.width/r.width), my=(clientY-r.top)*(t.cvs.height/r.height);
+ const w=minimapToWorld(t,mx,my);
+ state.camera.x=cr.width/2-w.x*state.camera.z; state.camera.y=cr.height/2-w.y*state.camera.z; renderCanvasOnly();
+}
+function timelineHtml(){
+ const q=(state.timelineSearch||'').toLowerCase();const events=[...(state.project.timeline||[])].filter(e=>!q||`${e.title} ${e.description}`.toLowerCase().includes(q)).sort((a,b)=>Number(a.year)-Number(b.year));
+ return `<section class="page"><div class="page-inner"><div class="page-head"><div><div class="title">Timeline</div><div class="sub">Chronological events connected to your world.</div></div><div class="actions"><input class="page-input" style="width:210px" data-timeline-search placeholder="Search events…" value="${esc(state.timelineSearch||'')}"><button class="tool primary" data-act="timeline-add">+ Event</button></div></div><div class="timeline">${events.length?events.map(e=>{const node=state.project.nodes.find(n=>n.id===e.nodeId);return `<div class="timeline-line"><div class="timeline-dot"></div><div class="timeline-card"><div class="timeline-year">${esc(e.year)}</div><input class="inp" data-tl-title="${e.id}" value="${esc(e.title)}"><textarea class="inp" rows="2" style="margin-top:7px" data-tl-desc="${e.id}">${esc(e.description||'')}</textarea><div class="split" style="margin-top:7px"><input class="inp" type="number" data-tl-year="${e.id}" value="${Number(e.year)||0}"><select class="inp" data-tl-node="${e.id}"><option value="">No linked node</option>${state.project.nodes.filter(n=>n.type!=='group').map(n=>`<option value="${n.id}" ${n.id===e.nodeId?'selected':''}>${esc(n.data.name)}</option>`).join('')}</select></div><div class="actions" style="margin-top:7px"><button class="tool small" data-tl-focus="${e.nodeId||''}">${node?'Focus '+esc(node.data.name):'Focus node'}</button><button class="tool small" data-tl-del="${e.id}">Delete</button></div></div></div>`}).join(''):'<div class="empty">No timeline events yet.</div>'}</div></div></section>`;
+}
+
+function databaseNodes(db){
+    const all = state.project.nodes.filter(n=>n.type!=='group');
+    return db?.nodeIds === null || db?.system ? all : all.filter(n => (db.nodeIds||[]).includes(n.id));
+}
+function createDatabase(){
+    const name = 'Database ' + state.project.databases.filter(d=>d.id!=='default').length + 1;
+    const db = {id:uid('db'), name, description:'Custom entity database', nodeIds:[]};
+    mutate(p=>({...p, databases:[...(p.databases||[]), db]}));
+    state.activeDatabase=db.id; state.dbSearch=''; render();
+}
+function deleteActiveDatabase(){
+    const db=activeDatabaseObj(); if(!db || db.system || db.id==='default'){ toast('The Default Database cannot be deleted'); return; }
+    if(!confirm('Delete database "'+db.name.replace(/"/g,'')+'"? The entities will remain in the project.')) return;
+    mutate(p=>({...p, databases:p.databases.filter(d=>d.id!==db.id)}));
+    state.activeDatabase='default'; render();
+}
+function renameActiveDatabase(value){
+    const db=activeDatabaseObj(); if(!db) return;
+    db.name=value.trim()||'Untitled Database'; saveSoon();
+}
+function toggleDatabaseMember(id, checked){
+    const db=activeDatabaseObj(); if(!db || db.system) return;
+    const set=new Set(db.nodeIds||[]); checked?set.add(id):set.delete(id); db.nodeIds=[...set]; saveSoon();
+}
+function openInfo(kind){ state.infoModal=kind; render(); }
+function closeInfo(){ state.infoModal=null; render(); }
+
+function infoModalHtml(){
+    if(!state.infoModal)return '';
+    if(state.infoModal==='about') return `<div class="modal-backdrop" data-info-backdrop><section class="info-modal help-modal" role="dialog" aria-modal="true"><div class="info-head"><div><div class="info-title">About Langi Engine</div><div class="sub" style="margin-top:3px">Visual worldbuilding workspace</div></div><button class="tool info-close" data-act="close-info">×</button></div><div class="info-body"><div class="help-grid"><div class="help-card"><h3>About</h3><p>Langi Engine is a local visual worldbuilding workspace for connected nodes, frames, images, databases, collections, timelines and structured content.</p></div><div class="help-card"><h3>Storage</h3><p>Projects are stored locally in this browser. Use Export to make a JSON backup and Import to restore one.</p></div><div class="help-card"><h3>Links</h3><div class="social-row"><a class="social-link" href="https://github.com/RPSMABT/langengine" target="_blank" rel="noopener">GitHub</a><a class="social-link" href="https://linktr.ee/rpsmabt" target="_blank" rel="noopener">Linktree</a></div></div><div class="help-card"><h3>Interface</h3><p>The canvas is the primary workspace. The Project Navigator, Inspector, Database, Assets and Timeline are separate tools around it.</p></div></div></div></section></div>`;
+    const shortcuts=[['Ctrl + H','Open the Help Guide'],['Shift + A','Open add-node menu'],['Middle mouse + drag','Pan canvas'],['Space + drag','Pan canvas'],['Left drag on empty canvas','Box select'],['Shift + click/drag','Extend selection'],['Delete','Delete selected nodes'],['Ctrl + D','Duplicate'],['Ctrl + Z','Undo'],['Ctrl + Shift + Z','Redo'],['Blue output → red input','Create connection'],['Escape','Close overlays / cancel connection']];
+    return `<div class="modal-backdrop" data-info-backdrop><section class="info-modal help-modal" role="dialog" aria-modal="true"><div class="info-head"><div><div class="info-title">Langi Engine Help Guide</div><div class="sub" style="margin-top:3px">How to use the web app</div></div><button class="tool info-close" data-act="close-info">×</button></div><div class="info-body"><div class="info-section"><h3>Quick start</h3><p>Use Add Node or <b>Shift + A</b> to create nodes. Select a node to edit it in the permanent Inspector. Drag a blue output point into a red input point to connect nodes.</p></div><div class="help-grid"><div class="help-card"><h3>Canvas & navigation</h3><ul><li>Middle mouse drag pans.</li><li>Space + drag pans.</li><li>Mouse wheel zooms around the cursor.</li><li>Fit centers the project.</li><li>Map opens the minimap.</li><li>BG changes the canvas background color.</li></ul></div><div class="help-card"><h3>Nodes & selection</h3><ul><li>Click to select a node.</li><li>Drag empty space to box-select.</li><li>Shift extends selection.</li><li>Drag resize handles to resize nodes.</li><li>Locked nodes cannot be edited or resized.</li></ul></div><div class="help-card"><h3>Connections</h3><ul><li>Blue = output.</li><li>Red = input.</li><li>Drag output → input to create a link.</li><li>Green lines show links.</li><li>Click a line to edit label, color and style.</li></ul></div><div class="help-card"><h3>Frames & collections</h3><ul><li>Group selected nodes into a frame.</li><li>Frames contain child nodes.</li><li>Create collections for reusable sets.</li><li>Moving a frame can carry its children.</li></ul></div><div class="help-card"><h3>Inspector</h3><ul><li>Name, tag and description update live.</li><li>Content supports tables, graphs, images, headings, quotes, checklists and dividers.</li><li>Links manages node relationships.</li><li>Changes save automatically.</li></ul></div><div class="help-card"><h3>Assets</h3><ul><li>Upload and organize images into folders.</li><li>Rename, move and delete assets.</li><li>Edit images with resize, crop, rotate and flip.</li><li>Use assets inside Image nodes.</li></ul></div><div class="help-card"><h3>Database</h3><ul><li>Default Database contains all project entities.</li><li>Create custom databases.</li><li>Choose membership with checkboxes.</li><li>Search and filter entities.</li><li>Save filtered views.</li></ul></div><div class="help-card"><h3>Timeline</h3><ul><li>Create chronological events.</li><li>Assign years.</li><li>Link events to nodes.</li><li>Focus a linked node from the timeline.</li></ul></div><div class="help-card"><h3>Appearance & tools</h3><ul><li>Toggle Grid and Snap from the canvas toolbar.</li><li>Organize automatically arranges the graph.</li><li>Types manages custom node types.</li><li>Fullscreen expands the browser workspace.</li></ul></div><div class="help-card"><h3>Keyboard shortcuts</h3><div class="shortcut-grid">${shortcuts.map(([k,d])=>`<div class="shortcut-row"><span>${esc(d)}</span><span class="shortcut-key">${esc(k)}</span></div>`).join('')}</div></div></div></div></section></div>`;
 }
 
 function render() {
-    app.innerHTML = `<div class="top"><div class="brand"><div class="mark">L</div><div class="name">Langi <span>Engine</span></div><div class="tabs">${[['canvas', 'Canvas'], ['database', 'Database'], ['assets', 'Assets']].map(x => `<button data-view="${x[0]}" class="${state.view === x[0] ? 'active' : ''}">${x[1]}</button>`).join('')}</div><div class="status">Shift+A Add · Space Pan · MMB Pan · Blue → Red Connect</div></div><div class="tools"><button class="tool" data-act="undo" ${state.history.length ? '' : 'disabled'}>↶</button><button class="tool" data-act="redo" ${state.future.length ? '' : 'disabled'}>↷</button><button class="tool" data-act="fit">Fit</button><button class="tool" data-act="export">Export</button><button class="tool" data-act="import">Import</button><button class="tool primary" data-act="add">+ Entity</button></div></div><div class="workspace">${state.view === 'canvas' ? canvasHtml() : state.view === 'database' ? databaseHtml() : assetsHtml()}</div>${state.menu ? menuHtml() : ''}${state.toast ? `<div class="toast">${esc(state.toast)}</div>` : ''}`;
+    app.innerHTML = `<div class="top"><div class="brand"><a class="mark" href="https://github.com/RPSMABT/langengine" target="_blank" rel="noopener" title="Open Langi Engine on GitHub">L</a><div class="name">Langi <span>Engine</span></div><div class="tabs">${[['canvas','Canvas'],['timeline','Timeline'],['database','Database'],['assets','Assets']].map(x => `<button data-view="${x[0]}" class="${state.view === x[0] ? 'active' : ''}">${x[1]}</button>`).join('')}</div></div><div class="tools"><button class="tool" data-act="help">Help <span class="shortcut">Ctrl+H</span></button><button class="tool" data-act="about">About</button><button class="tool" data-act="types">Types</button><a class="social-link-top" href="https://github.com/RPSMABT/langengine" target="_blank" rel="noopener">GitHub</a><a class="social-link-top" href="https://linktr.ee/rpsmabt" target="_blank" rel="noopener">Linktree</a><button class="tool fullscreen-btn" data-act="fullscreen">Fullscreen</button><button class="tool" data-act="undo" ${state.history.length ? '' : 'disabled'}>↶</button><button class="tool" data-act="redo" ${state.future.length ? '' : 'disabled'}>↷</button><button class="tool" data-act="fit">Fit</button><button class="tool" data-act="export">Export</button><button class="tool" data-act="import">Import</button><div class="entity-create"><select class="entity-select" data-add-type aria-label="Add node type"><option value="">+ Add Node…</option><option value="character">Character</option><option value="lore">Lore</option><option value="spell">Ability</option><option value="faction">Faction</option><option value="location">Location</option><option value="item">Item</option><option value="quest">Quest</option><option value="image">Image</option><option value="group">Frame / Group</option>${(state.project.customTypes||[]).map(t=>`<option value="${t.id}">${esc(t.name)}</option>`).join('')}</select><button class="tool primary" data-act="add-menu">More ▾</button></div></div></div><div class="workspace">${state.view === 'canvas' ? canvasHtml() : state.view === 'timeline' ? timelineHtml() : state.view === 'database' ? databaseHtml() : assetsHtml()}</div>${state.menu ? menuHtml() : ''}${state.entityMenu ? entityCreateMenuHtml() : ''}${state.toast ? `<div class="toast">${esc(state.toast)}</div>` : ''}${infoModalHtml()}${state.typeManager?manageTypesHtml():''}${assetEditorHtml()}`;
     bind();
+    if(state.minimap && state.view === 'canvas') requestAnimationFrame(drawMinimap);
 }
 
 function canvasHtml() {
     const ns = state.project.nodes, eds = state.project.edges, n = selectedNode();
     return `<div class="canvas-shell">
-        <div class="canvas" data-canvas>
+        <div class="canvas${state.gridOn?'':' grid-off'}" data-canvas style="background:${esc(state.project.canvasBackground||'#f6f7f8')}">
             <div class="grid" style="background-position:${state.camera.x}px ${state.camera.y}px;background-size:${60 * state.camera.z}px ${60 * state.camera.z}px"></div>
-            <div class="toolbar"><button class="tool small" data-act="zoom-in">+</button><button class="tool small" data-zoom-label>${Math.round(state.camera.z * 100)}%</button><button class="tool small" data-act="zoom-out">−</button><button class="tool small" data-act="fit">Fit</button><button class="tool small" data-act="focus" ${n ? '' : 'disabled'}>Focus</button></div>
-            <div class="hint">LMB drag: box select · Shift+drag: extend selection · MMB drag: pan · Connect blue → red · Shift+A: add · Right click: menu</div>
+            <div class="toolbar"><button class="tool small" data-act="zoom-in">+</button><button class="tool small" data-zoom-label>${Math.round(state.camera.z * 100)}%</button><button class="tool small" data-act="zoom-out">−</button><button class="tool small" data-act="fit">Fit</button><button class="tool small" data-act="focus" ${n ? '' : 'disabled'}>Focus</button><button class="tool small ${state.gridOn?'active':''}" data-act="grid">Grid</button><button class="tool small ${state.snapOn?'active':''}" data-act="snap">Snap</button><button class="tool small" data-act="layout">Organize</button><button class="tool small ${state.navOpen?'active':''}" data-act="navigator">Nav</button><button class="tool small ${state.minimap?'active':''}" data-act="minimap">Map</button><label class="canvas-bg-control" title="Change canvas background">BG <input type="color" data-canvas-bg value="${esc(state.project.canvasBackground||'#f6f7f8')}"></label></div>
+            <svg class="edge-overlay" aria-hidden="true">${edgesSvgContent(eds, ns)}${state.connect ? connectionPreviewSvgContent() : ''}</svg>
             <div class="world" style="transform:translate(${state.camera.x}px,${state.camera.y}px) scale(${state.camera.z})">
-                ${edgesHtml(eds, ns)}${state.connect ? connectionPreviewHtml() : ''}${ns.map(nodeHtml).join('')}
+                ${ns.map(nodeHtml).join('')}
             </div>
             ${state.marquee ? `<div class="select-box" style="left:${Math.min(state.marquee.sx, state.marquee.ex) * state.camera.z + state.camera.x}px;top:${Math.min(state.marquee.sy, state.marquee.ey) * state.camera.z + state.camera.y}px;width:${Math.abs(state.marquee.ex - state.marquee.sx) * state.camera.z}px;height:${Math.abs(state.marquee.ey - state.marquee.sy) * state.camera.z}px"></div>` : ''}
-            ${state.actions ? `<div class="select-actions"><span class="count">${state.selected.length} selected</span><button class="tool small" data-act="group">Group</button><button class="tool small" data-act="collection">Create Collection</button><button class="tool small" data-act="close-actions">×</button></div>` : ''}
+            ${state.actions ? `<div class="select-actions"><span class="count">${state.selected.length} selected</span><button class="tool small" data-align="left">Left</button><button class="tool small" data-align="center">Center</button><button class="tool small" data-align="right">Right</button><button class="tool small" data-align="top">Top</button><button class="tool small" data-align="middle">Middle</button><button class="tool small" data-align="bottom">Bottom</button><button class="tool small" data-act="group">Group</button><button class="tool small" data-act="collection">Create Collection</button><button class="tool small" data-act="close-actions">×</button></div>` : ''}
+            ${state.minimap ? minimapHtml() : ''}
         </div>
-        ${n ? inspectorHtml(n) : inspectorEmptyHtml()}
+        ${navigatorHtml()}${n ? inspectorHtml(n) : inspectorEmptyHtml()}
     </div>`;
 }
 
@@ -316,37 +503,54 @@ function portPoint(n, side) {
     return { x: side === 'output' ? n.x + n.width : n.x, y: n.y + n.height / 2 };
 }
 
-function edgesHtml(eds, ns) {
+function worldToScreenPoint(p) {
+    return { x: state.camera.x + p.x * state.camera.z, y: state.camera.y + p.y * state.camera.z };
+}
+
+function edgePathData(p1, p2) {
+    const gap = Math.max(50, Math.abs(p2.x - p1.x) * 0.42);
+    return `M${p1.x.toFixed(1)} ${p1.y.toFixed(1)} C${(p1.x + gap).toFixed(1)} ${p1.y.toFixed(1)}, ${(p2.x - gap).toFixed(1)} ${p2.y.toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`;
+}
+
+function edgesSvgContent(eds, ns) {
     const paths = eds.map(e => {
         const a = ns.find(n => n.id === e.source), b = ns.find(n => n.id === e.target);
         if (!a || !b) return '';
-        const p1 = portPoint(a, 'output'), p2 = portPoint(b, 'input');
-        const o = Math.max(70, Math.abs(p2.x - p1.x) * .42);
-        const d = `M${p1.x} ${p1.y} C${p1.x + o} ${p1.y}, ${p2.x - o} ${p2.y}, ${p2.x} ${p2.y}`;
-        const labelX = (p1.x + p2.x) / 2, labelY = (p1.y + p2.y) / 2 - 7;
-        return `<path class="connection-line" d="${d}"/><circle class="connection-arrow" cx="${p2.x}" cy="${p2.y}" r="4"/><text class="connection-label" x="${labelX}" y="${labelY}" text-anchor="middle">${esc(e.label || 'Linked')}</text>`;
+        const p1 = worldToScreenPoint(portPoint(a, 'output')), p2 = worldToScreenPoint(portPoint(b, 'input'));
+        const d = edgePathData(p1, p2);
+        const labelX = (p1.x + p2.x) / 2, labelY = (p1.y + p2.y) / 2 - 8;
+        const dash=e.style==='dashed'?'8 6':e.style==='dotted'?'2 6':''; const color=esc(e.color||'#28a85d'); return `<path class="connection-hit" data-edge="${e.id}" d="${d}"/><path class="connection-line ${state.selectedEdge===e.id?'connection-selected':''}" data-edge="${e.id}" d="${d}" stroke="${color}" ${dash?`stroke-dasharray="${dash}"`:''}/><text class="connection-label" x="${labelX.toFixed(1)}" y="${labelY.toFixed(1)}" style="fill:${color}" text-anchor="middle">${esc(e.label || 'Linked')}</text>`;
     }).join('');
-    return `<svg class="edge-layer" viewBox="0 0 10000 10000" preserveAspectRatio="none">${paths}</svg>`;
+    return paths;
 }
 
-function connectionPreviewHtml() {
+function connectionPreviewSvgContent() {
     const c = state.connect; if (!c) return '';
-    const p1 = { x: c.x, y: c.y }, p2 = { x: c.mx, y: c.my };
-    const o = Math.max(70, Math.abs(p2.x - p1.x) * .42);
-    const d = `M${p1.x} ${p1.y} C${p1.x + o} ${p1.y}, ${p2.x - o} ${p2.y}, ${p2.x} ${p2.y}`;
-    return `<svg class="edge-layer" viewBox="0 0 10000 10000" preserveAspectRatio="none"><path class="connection-preview" d="${d}"/></svg>`;
+    const p1 = worldToScreenPoint({ x: c.x, y: c.y }), p2 = worldToScreenPoint({ x: c.mx, y: c.my });
+    return `<path class="connection-preview" d="${edgePathData(p1, p2)}"/>`;
+}
+
+function refreshEdgeOverlay() {
+    const overlay = document.querySelector('.edge-overlay');
+    if (!overlay) return;
+    overlay.innerHTML = `${edgesSvgContent(state.project.edges, state.project.nodes)}${state.connect ? connectionPreviewSvgContent() : ''}`;
 }
 
 function nodeHtml(n) {
-    const meta = TYPES[n.type], d = n.data || {};
-    if (n.type === 'group') return `<div class="node group ${state.selected.includes(n.id) ? 'selected' : ''}" data-node="${n.id}" style="left:${n.x}px;top:${n.y}px;width:${n.width}px;height:${n.height}px"><div class="group-title" style="color:${meta[2]}">${meta[1]} ${esc(d.name)}</div></div>`;
+    const meta = typeDef(n.type), d = n.data || {};
+    const selected = state.selected.includes(n.id) ? ' selected' : '';
+    const locked = (n.locked || d.locked) ? ' locked' : '';
+    const childClass = n.parentId ? ' child-node' : '';
+    const handles = `<div class="resize-handle tl" data-resize="tl" data-node="${n.id}"></div><div class="resize-handle tr" data-resize="tr" data-node="${n.id}"></div><div class="resize-handle bl" data-resize="bl" data-node="${n.id}"></div><div class="resize-handle br" data-resize="br" data-node="${n.id}"></div>`;
+    if (n.type === 'group') return `<div class="node group${selected}${locked}" data-node="${n.id}" style="left:${n.x}px;top:${n.y}px;width:${n.width}px;height:${n.height}px"><div class="group-title" style="color:${meta[2]}">${meta[1]} ${esc(d.name)}</div>${handles}</div>`;
+    if (n.type === 'image') {
+        const b = (d.blocks || []).find(x => x.type === 'image' && x.url);
+        const imageExpanded = d.imageExpanded === true;
+        const imageClass = imageExpanded ? ' image-expanded' : ' image-collapsed';
+        return `<div class="node image-node${imageClass}${selected}${locked}${childClass}" data-node="${n.id}" style="left:${n.x}px;top:${n.y}px;width:${n.width}px;height:${n.height}px"><div class="port input" data-port="input" data-node="${n.id}" title="Input"></div><div class="port output" data-port="output" data-node="${n.id}" title="Output"></div><div class="head"><span class="type" style="color:${meta[2]}">${meta[1]}</span><span class="node-name" data-live-name>${esc(d.name)}</span><span class="badge" data-live-tag>${meta[0]}${d.tag ? ' · ' + esc(d.tag) : ''}</span></div><div class="image-toggle" data-image-toggle="${n.id}" title="Expand or collapse image"><span>Image</span><span class="chev">${imageExpanded ? '▴' : '▾'}</span></div><div class="body">${b ? `<img src="${b.url}" alt="${esc(d.name)}">` : '<div class="image-placeholder">Select an image in Inspector → Content</div>'}</div>${handles}</div>`;
+    }
     const tag = d.tag ? ` · ${esc(d.tag)}` : '';
-    return `<div class="node ${state.selected.includes(n.id) ? 'selected' : ''}" data-node="${n.id}" style="left:${n.x}px;top:${n.y}px;width:${n.width}px;height:${n.height}px">\
-        <div class="port input" data-port="input" data-node="${n.id}" title="Input"></div>\
-        <div class="port output" data-port="output" data-node="${n.id}" title="Output"></div>\
-        <div class="head"><span class="type" style="color:${meta[2]}">${meta[1]}</span><span class="node-name" data-live-name>${esc(d.name)}</span><span class="badge" data-live-tag>${meta[0]}${tag}</span></div>\
-        <div class="body"><div class="desc" data-live-description>${esc(d.content || 'No description yet.')}</div>${(d.role || d.region || d.school || d.leader) ? `<div class="meta" data-live-meta>${esc(d.role || d.region || d.school || d.leader)}</div>` : '<div class="meta" data-live-meta style="display:none"></div>'}${(d.blocks || []).slice(0, 2).map(blockHtml).join('')}</div>\
-    </div>`;
+    return `<div class="node${selected}${locked}${childClass}" data-node="${n.id}" style="left:${n.x}px;top:${n.y}px;width:${n.width}px;height:${n.height}px"><div class="port input" data-port="input" data-node="${n.id}" title="Input"></div><div class="port output" data-port="output" data-node="${n.id}" title="Output"></div><div class="head"><span class="type" style="color:${meta[2]}">${meta[1]}</span><span class="node-name" data-live-name>${esc(d.name)}</span><span class="badge" data-live-tag>${meta[0]}${tag}</span></div><div class="body"><div class="desc" data-live-description>${esc(d.content || 'No description yet.')}</div>${(d.role || d.region || d.school || d.leader) ? `<div class="meta" data-live-meta>${esc(d.role || d.region || d.school || d.leader)}</div>` : '<div class="meta" data-live-meta style="display:none"></div>'}${(d.blocks || []).slice(0, 4).map(blockHtml).join('')}</div>${handles}</div>`;
 }
 
 function inspectorHtml(n) {
@@ -355,38 +559,135 @@ function inspectorHtml(n) {
 
 function detailsHtml(n) {
     const d = n.data;
-    return `<div class="panel"><div class="field"><label>Name</label><input class="inp" data-field="name" value="${esc(d.name)}"></div><div class="split"><div class="field"><label>Tag</label><input class="inp" data-field="tag" value="${esc(d.tag)}"></div><div class="field"><label>Status</label><input class="inp" data-field="status" value="${esc(d.status)}"></div></div><div class="field"><label>Description</label><textarea class="inp" data-field="content" rows="7">${esc(d.content)}</textarea></div>${n.type === 'character' ? `<div class="split"><div class="field"><label>Role</label><input class="inp" data-field="role" value="${esc(d.role)}"></div><div class="field"><label>Alignment</label><input class="inp" data-field="alignment" value="${esc(d.alignment)}"></div></div>` : ''}${n.type === 'spell' ? `<div class="split"><div class="field"><label>School</label><input class="inp" data-field="school" value="${esc(d.school)}"></div><div class="field"><label>Cost</label><input class="inp" data-field="cost" value="${esc(d.cost)}"></div></div>` : ''}${n.type === 'location' ? `<div class="field"><label>Region</label><input class="inp" data-field="region" value="${esc(d.region)}"></div>` : ''}${n.type === 'faction' ? `<div class="field"><label>Leader</label><input class="inp" data-field="leader" value="${esc(d.leader)}"></div>` : ''}<div class="muted">Changes save automatically.</div></div>`;
+    const typeOptions = typeKeys().map(k => `<option value="${k}" ${k === n.type ? 'selected' : ''}>${TYPES[k][0]}</option>`).join('');
+    return `<div class="panel"><div class="node-type-row"><div class="type-swatch" style="color:${typeDef(n.type)[2]}">${typeDef(n.type)[1]}</div><select class="inp" data-node-type>${typeOptions}</select><label class="tool small" style="display:flex;align-items:center;gap:5px"><input type="checkbox" data-node-lock ${n.locked||d.locked?'checked':''}> Lock</label></div><div class="field"><label>Name</label><input class="inp" data-field="name" value="${esc(d.name)}"></div><div class="split"><div class="field"><label>Tag</label><input class="inp" data-field="tag" value="${esc(d.tag)}"></div><div class="field"><label>Status</label><input class="inp" data-field="status" value="${esc(d.status)}"></div></div><div class="field"><label>Description</label><textarea class="inp" data-field="content" rows="7">${esc(d.content)}</textarea></div>${n.type === 'character' ? `<div class="split"><div class="field"><label>Role</label><input class="inp" data-field="role" value="${esc(d.role)}"></div><div class="field"><label>Alignment</label><input class="inp" data-field="alignment" value="${esc(d.alignment)}"></div></div>` : ''}${n.type === 'spell' ? `<div class="split"><div class="field"><label>School</label><input class="inp" data-field="school" value="${esc(d.school)}"></div><div class="field"><label>Cost</label><input class="inp" data-field="cost" value="${esc(d.cost)}"></div></div>` : ''}${n.type === 'location' ? `<div class="field"><label>Region</label><input class="inp" data-field="region" value="${esc(d.region)}"></div>` : ''}${n.type === 'faction' ? `<div class="field"><label>Leader</label><input class="inp" data-field="leader" value="${esc(d.leader)}"></div>` : ''}<div class="muted">Changes save automatically.</div></div>`;
 }
 
 function contentHtml(n) {
     const bs = n.data.blocks || [];
-    return `<div class="panel"><div class="actions" style="margin-bottom:10px"><button class="tool small" data-block-add="table">+ Table</button><button class="tool small" data-block-add="graph">+ Graph</button><button class="tool small" data-block-add="image">+ Image</button></div>${bs.length ? bs.map((b, i) => blockEditorHtml(b, i)).join('') : '<div class="muted">Add a table, graph, or image block to this node.</div>'}</div>`;
+    if (n.type === 'image') {
+        const i = Math.max(0, bs.findIndex(b => b.type === 'image'));
+        const b = bs[i] || { id: uid('block'), type: 'image', title: 'Image', assetId: '', url: '' };
+        return `<div class="panel"><div class="field"><label>Image Asset</label><select class="inp" data-image-node-select><option value="">Select image…</option>${state.project.assets.map(a => `<option value="${a.id}" ${a.id === b.assetId ? 'selected' : ''}>${esc(a.name)}</option>`).join('')}</select></div>${!state.project.assets.length ? `<div class="muted" style="margin-top:-5px;margin-bottom:10px">No image assets yet. Use Assets → Upload images first.</div>` : ''}${b.url ? `<img src="${b.url}" style="display:block;width:100%;max-height:240px;object-fit:contain;border-radius:7px;background:#eef1f4">` : '<div class="muted">Upload an image in Assets first.</div>'}<div class="actions" style="margin-top:10px"><button class="tool small" data-act="fit-image">Fit to Image</button></div></div>`;
+    }
+    return `<div class="panel"><div class="actions" style="margin-bottom:10px"><button class="tool small" data-block-add="table">+ Table</button><button class="tool small" data-block-add="graph">+ Graph</button><button class="tool small" data-block-add="image">+ Image</button><button class="tool small" data-block-add="heading">+ Heading</button><button class="tool small" data-block-add="quote">+ Quote</button><button class="tool small" data-block-add="checklist">+ Checklist</button><button class="tool small" data-block-add="divider">+ Divider</button></div>${bs.length ? bs.map((b, i) => blockEditorHtml(b, i)).join('') : '<div class="muted">Add a table, graph, or image block to this node.</div>'}</div>`;
 }
 
-function blockEditorHtml(b, i) {
-    if (b.type === 'table') return `<div class="card"><div class="card-head"><input class="inp" data-b-title="${i}" value="${esc(b.title)}"><button class="tool small" data-b-del="${i}">×</button></div><div class="muted" style="margin-bottom:5px">Columns</div><div class="split">${b.headers.map((h, j) => `<input class="inp" data-t-head="${i}:${j}" value="${esc(h)}">`).join('')}</div><div class="muted" style="margin:9px 0 5px">Rows</div>${b.rows.map((r, ri) => `<div class="split" style="margin-bottom:5px">${r.map((c, ci) => `<input class="inp" data-t-cell="${i}:${ri}:${ci}" value="${esc(c)}">`).join('')}</div>`).join('')}<button class="tool small" data-t-row="${i}">+ Row</button></div>`;
-    if (b.type === 'graph') return `<div class="card"><div class="card-head"><input class="inp" data-b-title="${i}" value="${esc(b.title)}"><button class="tool small" data-b-del="${i}">×</button></div>${b.items.map((x, j) => `<div class="split" style="margin-bottom:5px"><input class="inp" data-g-label="${i}:${j}" value="${esc(x.label)}"><input class="inp" type="number" data-g-value="${i}:${j}" value="${Number(x.value) || 0}"></div>`).join('')}<button class="tool small" data-g-add="${i}">+ Data</button></div>`;
-    return `<div class="card"><div class="card-head"><input class="inp" data-b-title="${i}" value="${esc(b.title)}"><button class="tool small" data-b-del="${i}">×</button></div><select class="inp" data-img-select="${i}"><option value="">Select asset</option>${state.project.assets.map(a => `<option value="${a.id}" ${a.id === b.assetId ? 'selected' : ''}>${esc(a.name)}</option>`).join('')}</select>${b.url ? `<img src="${b.url}" style="width:100%;max-height:170px;object-fit:cover;border-radius:6px;margin-top:7px">` : ''}</div>`;
+function blockEditorHtml(b,i){
+ if(b.type==='heading')return `<div class="card"><div class="card-head"><input class="inp" data-b-text="${i}" value="${esc(b.text||'Heading')}"><button class="tool small" data-b-del="${i}">×</button></div></div>`;
+ if(b.type==='quote')return `<div class="card"><div class="card-head"><textarea class="inp" data-b-text="${i}" rows="2">${esc(b.text||'Quote')}</textarea><button class="tool small" data-b-del="${i}">×</button></div></div>`;
+ if(b.type==='divider')return `<div class="card"><div class="card-head"><div class="muted" style="flex:1">Divider</div><button class="tool small" data-b-del="${i}">×</button></div></div>`;
+ if(b.type==='checklist')return `<div class="card"><div class="card-head"><input class="inp" data-b-check-title="${i}" value="${esc(b.title||'Checklist')}"><button class="tool small" data-b-del="${i}">×</button></div>${(b.items||[]).map((x,j)=>`<div class="split" style="margin-bottom:5px"><label class="tool small" style="display:flex;align-items:center;gap:5px"><input type="checkbox" data-b-check="${i}:${j}" ${x.done?'checked':''}> Done</label><input class="inp" data-b-check-text="${i}:${j}" value="${esc(x.text||'Item')}"></div>`).join('')}<button class="tool small" data-b-check-add="${i}">+ Item</button></div>`;
+ if(b.type==='table')return `<div class="card"><div class="card-head"><input class="inp" data-b-title="${i}" value="${esc(b.title||'Table')}"><button class="tool small" data-b-del="${i}">×</button></div><div class="muted" style="margin-bottom:5px">Columns</div><div class="split">${b.headers.map((h,j)=>`<input class="inp" data-t-head="${i}:${j}" value="${esc(h)}">`).join('')}</div><div class="muted" style="margin:9px 0 5px">Rows</div>${b.rows.map((r,ri)=>`<div class="split" style="margin-bottom:5px">${r.map((c,ci)=>`<input class="inp" data-t-cell="${i}:${ri}:${ci}" value="${esc(c)}">`).join('')}</div>`).join('')}<button class="tool small" data-t-row="${i}">+ Row</button></div>`;
+ if(b.type==='graph')return `<div class="card"><div class="card-head"><input class="inp" data-b-title="${i}" value="${esc(b.title||'Graph')}"><button class="tool small" data-b-del="${i}">×</button></div>${b.items.map((x,j)=>`<div class="split" style="margin-bottom:5px"><input class="inp" data-g-label="${i}:${j}" value="${esc(x.label)}"><input class="inp" type="number" data-g-value="${i}:${j}" value="${Number(x.value)||0}"></div>`).join('')}<button class="tool small" data-g-add="${i}">+ Data</button></div>`;
+ return `<div class="card"><div class="card-head"><input class="inp" data-b-title="${i}" value="${esc(b.title||'Image')}"><button class="tool small" data-b-del="${i}">×</button></div><select class="inp" data-img-select="${i}"><option value="">Select asset</option>${state.project.assets.map(a=>`<option value="${a.id}" ${a.id===b.assetId?'selected':''}>${esc(a.name)}</option>`).join('')}</select>${b.url?`<img src="${b.url}" style="width:100%;max-height:170px;object-fit:contain;border-radius:6px;margin-top:7px">`:''}</div>`;
 }
 
 function linksHtml(n) {
-    const links = state.project.edges.filter(e => e.source === n.id || e.target === n.id);
-    return `<div class="panel">${links.length ? links.map(e => { const o = state.project.nodes.find(x => x.id === (e.source === n.id ? e.target : e.source)); return `<div class="card"><div style="display:flex;gap:8px;align-items:center;justify-content:space-between"><span>${esc(o?.data.name || 'Unknown')}</span><button class="tool small" data-edge-del="${e.id}">×</button></div></div>`; }).join('') : '<div class="muted" style="margin-bottom:9px">No links yet.</div>'}<select class="inp" data-connect><option value="">+ Connect entity</option>${state.project.nodes.filter(x => x.id !== n.id).map(x => `<option value="${x.id}">${esc(x.data.name)}</option>`).join('')}</select></div>`;
+ const links=state.project.edges.filter(e=>e.source===n.id||e.target===n.id);const edge=state.project.edges.find(e=>e.id===state.selectedEdge&&(e.source===n.id||e.target===n.id));
+ return `<div class="panel">${links.length?links.map(e=>{const o=state.project.nodes.find(x=>x.id===(e.source===n.id?e.target:e.source));return `<div class="card"><div style="display:flex;gap:8px;align-items:center"><button class="tool small" style="flex:1;text-align:left" data-edge-select="${e.id}">${esc(o?.data.name||'Unknown')}</button><button class="tool small" data-edge-del="${e.id}">×</button></div></div>`}).join(''):'<div class="muted" style="margin-bottom:9px">No links yet.</div>'}<select class="inp" data-connect><option value="">+ Connect entity</option>${state.project.nodes.filter(x=>x.id!==n.id).map(x=>`<option value="${x.id}">${esc(x.data.name)}</option>`).join('')}</select>${edge?`<div class="edge-editor"><div class="field"><label>Connection label</label><input class="inp" data-edge-field="label" data-edge-id="${edge.id}" value="${esc(edge.label||'Linked')}"></div><div class="split"><div class="field"><label>Color</label><input class="edge-swatch" type="color" data-edge-field="color" data-edge-id="${edge.id}" value="${esc(edge.color||'#28a85d')}"></div><div class="field"><label>Style</label><select class="inp" data-edge-field="style" data-edge-id="${edge.id}"><option value="solid" ${edge.style==='solid'?'selected':''}>Solid</option><option value="dashed" ${edge.style==='dashed'?'selected':''}>Dashed</option><option value="dotted" ${edge.style==='dotted'?'selected':''}>Dotted</option></select></div></div></div>`:''}</div>`;
 }
 
 function databaseHtml() {
-    const q = (state.dbSearch || '').toLowerCase(), f = state.dbFilter || 'all', rows = state.project.nodes.filter(n => n.type !== 'group' && (f === 'all' || n.type === f) && (!q || `${n.data.name} ${n.data.tag} ${n.data.content}`.toLowerCase().includes(q)));
-    return `<section class="page"><div class="page-inner"><div class="page-head"><div><div class="title">Entity Database</div><div class="sub">Browse the project as structured data.</div></div></div><div class="search"><input class="page-input" data-db-search placeholder="Search entities…" value="${esc(state.dbSearch || '')}"><select class="page-input" style="width:170px" data-db-filter><option value="all">All types</option>${Object.keys(TYPES).filter(k => k !== 'group').map(k => `<option value="${k}" ${f === k ? 'selected' : ''}>${TYPES[k][0]}</option>`).join('')}</select></div><table class="db"><thead><tr><th>Type</th><th>Name</th><th>Tag</th><th>Status</th><th>Links</th></tr></thead><tbody>${rows.map(n => `<tr data-open-node="${n.id}"><td style="color:${TYPES[n.type][2]}">${TYPES[n.type][1]} ${TYPES[n.type][0]}</td><td>${esc(n.data.name)}</td><td>${esc(n.data.tag || '—')}</td><td>${esc(n.data.status || '—')}</td><td>${state.project.edges.filter(e => e.source === n.id || e.target === n.id).length}</td></tr>`).join('')}</tbody></table></div></section>`;
+    ensureDatabaseSchema();
+    const db=activeDatabaseObj();
+    const q=(state.dbSearch||'').toLowerCase(), f=state.dbFilter||'all', st=state.dbStatus||'all';
+    const base=db?.system ? databaseNodes(db) : state.project.nodes.filter(n=>n.type!=='group');
+    const rows=base.filter(n=>(f==='all'||n.type===f)&&(st==='all'||n.data.status===st)&&(!q||`${n.data.name} ${n.data.tag} ${n.data.content}`.toLowerCase().includes(q)));
+    return `<section class="page"><div class="page-inner"><div class="db-layout">
+        <aside class="db-sidebar"><div class="db-sidebar-head"><div class="db-sidebar-title">Databases</div><button class="tool small" data-act="db-create" title="Create database">+</button></div><div class="db-list">${state.project.databases.map(d=>`<button class="db-item ${d.id===state.activeDatabase?'active':''}" data-db-open="${d.id}"><div class="db-item-name">${esc(d.name)}</div><div class="db-item-sub">${d.system?'All entities':(d.nodeIds||[]).length+' selected'}</div></button>`).join('')}</div><div class="db-views"><div class="nav-group">Saved Views</div>${state.project.savedViews.map(v=>`<div class="db-view-item"><button class="db-item" data-db-view="${v.id}">${esc(v.name)}</button><button class="tool small" data-db-view-del="${v.id}">×</button></div>`).join('')||'<div class="muted" style="padding:6px">No saved views.</div>'}</div></aside>
+        <div class="db-main"><div class="page-head"><div style="min-width:0;flex:1"><input class="db-title-input" data-db-name value="${esc(db?.name||'Database')}" aria-label="Database name"><div class="sub">${esc(db?.description||'Custom entity database')}</div></div>${db?.system?'':'<button class="tool" data-act="db-delete">Delete Database</button>'}</div>
+        <div class="db-controls"><input class="page-input" data-db-search placeholder="Search entities…" value="${esc(state.dbSearch||'')}"><select class="page-input" style="width:170px" data-db-filter><option value="all">All types</option>${typeKeys().map(k=>`<option value="${k}" ${f===k?'selected':''}>${TYPES[k][0]}</option>`).join('')}</select><select class="page-input" style="width:150px" data-db-status><option value="all">All statuses</option>${[...new Set(state.project.nodes.map(n=>n.data.status).filter(Boolean))].map(x=>`<option value="${esc(x)}" ${st===x?'selected':''}>${esc(x)}</option>`).join('')}</select><button class="tool" data-act="db-save-view">Save View</button></div>
+        ${db?.system?'<div class="db-member-note">Default Database contains every non-group entity automatically.</div>':'<div class="db-member-note">Use the checkboxes to choose which entities belong to this database. Changes save automatically.</div>'}
+        ${rows.length?`<table class="db"><thead><tr>${db?.system?'':'<th class="db-check">In</th>'}<th>Type</th><th>Name</th><th>Tag</th><th>Status</th><th>Links</th></tr></thead><tbody>${rows.map(n=>{const checked=db?.system||(db?.nodeIds||[]).includes(n.id);return `<tr data-open-node="${n.id}">${db?.system?'':'<td class="db-check" onclick="event.stopPropagation()"><input type="checkbox" data-db-member="'+n.id+'" '+(checked?'checked':'')+'></td>'}<td style="color:${TYPES[n.type][2]}">${TYPES[n.type][1]} ${TYPES[n.type][0]}</td><td>${esc(n.data.name)}</td><td>${esc(n.data.tag||'—')}</td><td>${esc(n.data.status||'—')}</td><td>${state.project.edges.filter(e=>e.source===n.id||e.target===n.id).length}</td></tr>`}).join('')}</tbody></table>`:'<div class="db-empty">No entities in this database match the current filters.</div>'}
+        </div></div></section>`;
+}
+
+function assetFolderObj(id){ return (state.project.assetFolders||[]).find(f=>f.id===id) || (state.project.assetFolders||[]).find(f=>f.id==='root'); }
+function openAssetEditor(id){
+    const a=state.project.assets.find(x=>x.id===id); if(!a) return;
+    const img=new Image(); img.onload=()=>{
+        state.assetEditor={id,src:a.url,sourceW:img.naturalWidth||1,sourceH:img.naturalHeight||1,cropX:0,cropY:0,cropW:img.naturalWidth||1,cropH:img.naturalHeight||1,resizeW:img.naturalWidth||1,resizeH:img.naturalHeight||1,rotate:0,flipX:false,flipY:false};
+        render(); requestAnimationFrame(drawAssetEditorPreview);
+    }; img.src=a.url;
+}
+function closeAssetEditor(){ state.assetEditor=null; render(); }
+function normalizeEditor(){
+    const e=state.assetEditor; if(!e) return;
+    e.cropX=clamp(Math.round(Number(e.cropX)||0),0,Math.max(0,e.sourceW-1));
+    e.cropY=clamp(Math.round(Number(e.cropY)||0),0,Math.max(0,e.sourceH-1));
+    e.cropW=clamp(Math.round(Number(e.cropW)||1),1,Math.max(1,e.sourceW-e.cropX));
+    e.cropH=clamp(Math.round(Number(e.cropH)||1),1,Math.max(1,e.sourceH-e.cropY));
+    e.resizeW=clamp(Math.round(Number(e.resizeW)||e.cropW),1,12000);
+    e.resizeH=clamp(Math.round(Number(e.resizeH)||e.cropH),1,12000);
+}
+function drawAssetEditorPreview(){
+    const e=state.assetEditor, cvs=document.querySelector('[data-asset-editor-canvas]'); if(!e||!cvs) return;
+    normalizeEditor(); const img=new Image(); img.onload=()=>{
+        let outW=e.resizeW, outH=e.resizeH; if(e.rotate===90||e.rotate===270){const t=outW;outW=outH;outH=t;}
+        cvs.width=Math.max(1,outW); cvs.height=Math.max(1,outH);
+        const ctx=cvs.getContext('2d'); ctx.clearRect(0,0,cvs.width,cvs.height); ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality='high';
+        ctx.save(); ctx.translate(cvs.width/2,cvs.height/2); ctx.rotate((e.rotate||0)*Math.PI/180); ctx.scale(e.flipX?-1:1,e.flipY?-1:1);
+        const dw=e.resizeW, dh=e.resizeH; ctx.drawImage(img,e.cropX,e.cropY,e.cropW,e.cropH,-dw/2,-dh/2,dw,dh); ctx.restore();
+        const badge=document.querySelector('[data-editor-size]'); if(badge) badge.textContent=`Preview ${cvs.width} × ${cvs.height}px`;
+    }; img.src=e.src;
+}
+function updateEditorField(field,value){ const e=state.assetEditor; if(!e)return; e[field]=Number.isFinite(+value)?+value:value; normalizeEditor(); drawAssetEditorPreview(); }
+async function applyAssetEditor(){
+    const e=state.assetEditor; if(!e)return; normalizeEditor();
+    const img=await new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>resolve(i);i.onerror=reject;i.src=e.src;});
+    let outW=e.resizeW,outH=e.resizeH;if(e.rotate===90||e.rotate===270){const t=outW;outW=outH;outH=t;}
+    const cvs=document.createElement('canvas'); cvs.width=outW; cvs.height=outH; const ctx=cvs.getContext('2d'); ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+    ctx.translate(outW/2,outH/2);ctx.rotate((e.rotate||0)*Math.PI/180);ctx.scale(e.flipX?-1:1,e.flipY?-1:1);ctx.drawImage(img,e.cropX,e.cropY,e.cropW,e.cropH,-e.resizeW/2,-e.resizeH/2,e.resizeW,e.resizeH);
+    const url=cvs.toDataURL('image/png');
+    const a=state.project.assets.find(x=>x.id===e.id);if(!a)return;
+    const oldUrl=a.url;
+    a.url=url;a.width=outW;a.height=outH;
+    state.project.nodes.forEach(n=>{n.data=(n.data&&n.data.blocks)?{...n.data,blocks:n.data.blocks.map(b=>b.assetId===a.id?{...b,url}:b)}:n.data;});
+    save();state.assetEditor=null;render();requestAnimationFrame(()=>{state.project.nodes.forEach(n=>{if((n.data?.blocks||[]).some(b=>b.type==='image'&&b.assetId===a.id))fitNodeToImage(n.id);});});
+    toast('Image updated');
+}
+function createAssetFolder(){
+    const name=prompt('Folder name','New Folder');if(!name?.trim())return;const folder={id:uid('asset-folder'),name:name.trim()};mutate(p=>({...p,assetFolders:[...(p.assetFolders||[]),folder]}));state.assetFolder=folder.id;render();
+}
+function renameAssetFolder(id){
+    const f=state.project.assetFolders.find(x=>x.id===id);if(!f||f.system)return;const name=prompt('Rename folder',f.name);if(!name?.trim())return;f.name=name.trim();save();render();
+}
+function deleteAssetFolder(id){
+    const f=state.project.assetFolders.find(x=>x.id===id);if(!f||f.system)return;
+    if(!confirm(`Delete folder "${f.name.replace(/"/g,'')}"? Assets will be moved to Root.`))return;
+    state.project.assets.forEach(a=>{if(a.folderId===id)a.folderId='root';});state.project.assetFolders=state.project.assetFolders.filter(x=>x.id!==id);state.assetFolder='root';save();render();
+}
+function renameAsset(id){
+    const a=state.project.assets.find(x=>x.id===id);if(!a)return;const name=prompt('Rename asset',a.name);if(!name?.trim())return;a.name=name.trim();save();render();
+}
+function moveAsset(id,folderId){ const a=state.project.assets.find(x=>x.id===id); if(!a)return;a.folderId=folderId||'root';save();render(); }
+function deleteAsset(id){
+    const a=state.project.assets.find(x=>x.id===id);if(!a)return;if(!confirm(`Delete asset "${a.name.replace(/"/g,'')}"?`))return;
+    state.project.assets=state.project.assets.filter(x=>x.id!==id);state.project.nodes=state.project.nodes.map(n=>({...n,data:{...n.data,blocks:(n.data.blocks||[]).map(b=>b.assetId===id?{...b,assetId:'',url:''}:b)}}));save();render();
+}
+
+function assetEditorHtml(){
+    const e=state.assetEditor;if(!e)return '';const a=state.project.assets.find(x=>x.id===e.id);if(!a)return '';
+    return `<div class="modal-backdrop" data-asset-editor-backdrop><section class="info-modal asset-editor-modal" role="dialog" aria-modal="true"><div class="info-head"><div><div class="info-title">Edit Image</div><div class="sub" style="margin-top:3px">${esc(a.name)}</div></div><button class="tool info-close" data-act="asset-editor-close">×</button></div><div class="asset-editor-body"><div class="asset-editor-preview"><canvas data-asset-editor-canvas></canvas><div class="editor-preview-badge" data-editor-size>Preview</div></div><div class="asset-editor-panel"><div class="field"><label>Resize</label><div class="editor-dims"><input class="inp" type="number" min="1" data-editor-field="resizeW" value="${e.resizeW}"><input class="inp" type="number" min="1" data-editor-field="resizeH" value="${e.resizeH}"></div><div class="range-note">Output size before rotation</div></div><div class="field"><label>Crop</label><div class="split"><input class="inp" type="number" min="0" data-editor-field="cropX" value="${e.cropX}"><input class="inp" type="number" min="0" data-editor-field="cropY" value="${e.cropY}"></div><div class="split" style="margin-top:7px"><input class="inp" type="number" min="1" data-editor-field="cropW" value="${e.cropW}"><input class="inp" type="number" min="1" data-editor-field="cropH" value="${e.cropH}"></div><div class="range-note">X, Y, width, height in source pixels</div></div><div class="field"><label>Rotate</label><div class="actions"><button class="tool small" data-editor-rotate="-90">↶ 90°</button><button class="tool small" data-editor-rotate="90">↷ 90°</button><button class="tool small" data-editor-rotate="180">180°</button><button class="tool small" data-editor-rotate="0">Reset</button></div></div><div class="field"><label>Flip</label><div class="actions"><button class="tool small ${e.flipX?'active':''}" data-editor-flip="x">Horizontal</button><button class="tool small ${e.flipY?'active':''}" data-editor-flip="y">Vertical</button></div></div><div class="asset-editor-hint">Changes are only written to the asset when you press Apply. Image nodes using this asset update automatically.</div></div></div><div class="asset-editor-actions"><button class="tool" data-act="asset-editor-close">Cancel</button><button class="tool primary" data-act="asset-editor-apply">Apply Changes</button></div></section></div>`;
 }
 
 function assetsHtml() {
-    return `<section class="page"><div class="page-inner"><div class="page-head"><div><div class="title">Assets</div><div class="sub">Images can be inserted into node content blocks.</div></div><button class="tool primary" data-act="upload">Upload images</button></div>${state.project.assets.length ? `<div class="assets">${state.project.assets.map(a => `<div class="asset"><div class="asset-img"><img src="${a.url}" alt=""></div><div class="asset-meta"><div class="asset-name" title="${esc(a.name)}">${esc(a.name)}</div><button class="tool small" data-asset-del="${a.id}">Delete</button></div></div>`).join('')}</div>` : '<div class="empty">No images yet. Upload references here.</div>'}</div></section>`;
+    const folders=state.project.assetFolders||[{id:'root',name:'Root',system:true}];
+    const folder=assetFolderObj(state.assetFolder)||folders[0];
+    const q=(state.assetSearch||'').toLowerCase();
+    const assets=state.project.assets.filter(a=>(a.folderId||'root')===folder.id&&(!q||a.name.toLowerCase().includes(q)));
+    return `<section class="page"><div class="page-inner"><div class="page-head"><div><div class="title">Assets</div><div class="sub">Manage images, folders, and reusable media.</div></div><button class="tool primary" data-act="upload">Upload images</button></div><div class="asset-layout"><aside class="asset-sidebar"><div class="asset-sidebar-head"><div class="asset-sidebar-title">Folders</div><button class="tool small" data-act="asset-folder-create" title="Create folder">+</button></div><div class="asset-folder-list">${folders.map(f=>{const count=state.project.assets.filter(a=>(a.folderId||'root')===f.id).length;return `<div class="asset-folder ${f.id===folder.id?'active':''}"><button class="asset-folder" style="flex:1;border:0;padding:0;background:transparent" data-asset-folder="${f.id}"><span>▰</span><span class="asset-folder-name">${esc(f.name)}</span><span class="asset-folder-count">${count}</span></button>${f.system?'':`<button class="tool small" data-asset-folder-rename="${f.id}" title="Rename">✎</button><button class="tool small" data-asset-folder-delete="${f.id}" title="Delete">×</button>`}</div>`}).join('')}</div></aside><div class="asset-main"><div class="asset-toolbar"><input class="page-input" style="width:260px" data-asset-search placeholder="Search assets…" value="${esc(state.assetSearch||'')}"><input class="asset-name-inline" style="width:220px" value="${esc(folder.name)}" ${folder.system?'disabled':''} data-asset-folder-name><span class="muted">${assets.length} asset${assets.length===1?'':'s'}</span></div>${assets.length?`<div class="asset-grid">${assets.map(a=>`<article class="asset-card"><div class="asset-img"><img src="${a.url}" alt="${esc(a.name)}"></div><div class="asset-meta"><div class="asset-name" title="${esc(a.name)}">${esc(a.name)}</div><div class="asset-card-actions"><button class="tool small" data-asset-edit="${a.id}" title="Edit image">Edit</button><button class="tool small" data-asset-rename="${a.id}" title="Rename asset">✎</button><button class="tool small" data-asset-del="${a.id}" title="Delete asset">×</button></div></div><div class="asset-folder-label"><select class="inp" style="padding:6px" data-asset-move="${a.id}">${folders.map(f=>`<option value="${f.id}" ${f.id===(a.folderId||'root')?'selected':''}>${esc(f.name)}</option>`).join('')}</select></div></article>`).join('')}</div>`:'<div class="asset-empty">No images in this folder. Upload an image or move one here.</div>'}</div></div></div></section>`;
+}
+function entityCreateMenuHtml() {
+    const types = [['character','Character'],['lore','Lore'],['spell','Ability'],['faction','Faction'],['location','Location'],['item','Item'],['quest','Quest'],['image','Image'],['group','Frame / Group'],...((state.project.customTypes||[]).map(t=>[t.id,t.name]))];
+    return `<div class="entity-create-menu" style="right:10px;top:62px" data-entity-menu>${types.map(([k,label]) => `<button class="menu-row" data-entity-create="${k}"><span class="menu-icon">${TYPES[k][1]}</span><span>${label}</span></button>`).join('')}</div>`;
 }
 
 function menuHtml() {
-    const x = state.menu;
-    const create = [['character', 'Character', 'C'], ['lore', 'Lore', 'L'], ['spell', 'Ability', 'B'], ['faction', 'Faction', 'F'], ['location', 'Location', 'O'], ['item', 'Item', 'I'], ['quest', 'Quest', 'Q'], ['group', 'Frame / Group', 'G']];
-    return `<div class="menu" style="left:${x.x}px;top:${x.y}px" data-menu><div class="menu-head">Create</div>${create.map(a => `<button class="menu-row" data-create="${a[0]}"><span class="menu-icon">${TYPES[a[0]][1]}</span><span>${a[1]}</span><span class="shortcut">${a[2]}</span></button>`).join('')}${x.type === 'node' ? `<div class="sep"></div><button class="menu-row" data-menu-act="select">Select node <span class="shortcut">Enter</span></button><button class="menu-row" data-menu-act="dup">Duplicate <span class="shortcut">Ctrl+D</span></button><button class="menu-row" data-menu-act="del">Delete <span class="shortcut">Del</span></button>` : ''}${state.selected.length ? `<div class="sep"></div><button class="menu-row" data-menu-act="group">Group selection</button><button class="menu-row" data-menu-act="collection">Create collection</button>` : ''}<div class="sep"></div><div class="menu-head">Shift+A opens this menu</div></div>`;
+    const x=state.menu;
+    const create=[['character','Character'],['lore','Lore'],['spell','Ability'],['faction','Faction'],['location','Location'],['item','Item'],['quest','Quest'],['image','Image'],['group','Frame / Group'],...((state.project.customTypes||[]).map(t=>[t.id,t.name]))];
+    return `<div class="menu" style="left:${x.x}px;top:${x.y}px" data-menu><div class="menu-head">Create</div>${create.map(a=>`<button class="menu-row" data-create="${a[0]}"><span class="menu-icon">${TYPES[a[0]][1]}</span><span>${a[1]}</span></button>`).join('')}${x.type==='node'?`<div class="sep"></div><button class="menu-row" data-menu-act="select">Select node</button><button class="menu-row" data-menu-act="dup">Duplicate</button><button class="menu-row" data-menu-act="del">Delete</button>`:''}${state.selected.length?`<div class="sep"></div><button class="menu-row" data-menu-act="group">Group selection</button><button class="menu-row" data-menu-act="collection">Create collection</button>`:''}</div>`;
 }
 
 function updateNodeFieldLive(id, field, value) {
@@ -410,16 +711,43 @@ function updateNodeFieldLive(id, field, value) {
     }
 }
 
+async function toggleFullscreen(){
+    try{
+        if(!document.fullscreenElement) await document.documentElement.requestFullscreen();
+        else await document.exitFullscreen();
+    }catch(e){toast('Fullscreen is not available in this browser');}
+}
+window.addEventListener('fullscreenchange',()=>document.body.classList.toggle('fullscreen-active',!!document.fullscreenElement));
+
 function bind() {
     document.querySelectorAll('[data-view]').forEach(b => b.onclick = () => { state.view = b.dataset.view; state.menu = null; render() });
     document.querySelectorAll('[data-act]').forEach(b => b.onclick = e => {
         const a = b.dataset.act;
-        if (a === 'undo') { if (state.history.length) { state.future.unshift(cp(state.project)); state.project = state.history.pop(); save(); render() } }
-        else if (a === 'redo') { if (state.future.length) { state.history.push(cp(state.project)); state.project = state.future.shift(); save(); render() } }
+        if (a === 'help') { openInfo('help') }
+        else if (a === 'fullscreen') { toggleFullscreen() }
+        else if (a === 'types') { state.typeManager=true; render() }
+        else if (a === 'close-types') { state.typeManager=false; render() }
+        else if (a === 'create-type') { const name=$('[data-type-name]')?.value.trim(); const icon=$('[data-type-icon]')?.value.trim()||'◆'; const color=$('[data-type-color]')?.value||'#7b8fa3'; if(!name){toast('Type name required');return;} const id='custom-'+uid('type'); const t={id,name,icon,color}; state.project.customTypes.push(t); TYPES[id]=[name,icon,color]; save(); render(); toast('Custom type created') }
+        else if (a === 'timeline-add') { createTimelineEvent() }
+        else if (a === 'db-save-view') { saveView() }
+        else if (a === 'grid') { state.gridOn=!state.gridOn; render() }
+        else if (a === 'snap') { state.snapOn=!state.snapOn; render() }
+        else if (a === 'layout') { autoLayout() }
+        else if (a === 'navigator') { state.navOpen=!state.navOpen; render() }
+        else if (a === 'minimap') { state.minimap=!state.minimap; render() }
+        else if (a === 'shortcuts') { openInfo('help') }
+        else if (a === 'about') { openInfo('about') }
+        else if (a === 'close-info') { closeInfo() }
+        else if (a === 'db-create') { createDatabase() }
+        else if (a === 'db-delete') { deleteActiveDatabase() }
+        else if (a === 'undo') { if (state.history.length) { state.future.unshift(cp(state.project)); state.project = state.history.pop(); ensureDatabaseSchema(); ensureFeatureSchema(); save(); render() } }
+        else if (a === 'redo') { if (state.future.length) { state.history.push(cp(state.project)); state.project = state.future.shift(); ensureDatabaseSchema(); ensureFeatureSchema(); save(); render() } }
         else if (a === 'fit') fit(); else if (a === 'focus') focus();
         else if (a === 'zoom-in') zoomAt(1.12, innerWidth / 2, innerHeight / 2);
         else if (a === 'zoom-out') zoomAt(.89, innerWidth / 2, innerHeight / 2);
         else if (a === 'add') { addNode('character') }
+        else if (a === 'add-menu') { state.entityMenu = !state.entityMenu; state.menu = null; render() }
+        else if (a === 'fit-image') { const n = selectedNode(); if (n) fitNodeToImage(n.id) }
         else if (a === 'delete') { deleteSelected() }
         else if (a === 'duplicate') { if (state.selected.length === 1) duplicate(state.selected[0]) }
         else if (a === 'group') makeGroup(); else if (a === 'collection') makeCollection();
@@ -427,8 +755,13 @@ function bind() {
         else if (a === 'export') exportJson();
         else if (a === 'import') $('#json-file')?.click();
         else if (a === 'upload') $('#asset-file')?.click();
+        else if (a === 'asset-folder-create') createAssetFolder();
+        else if (a === 'asset-editor-close') closeAssetEditor();
+        else if (a === 'asset-editor-apply') applyAssetEditor();
     });
     document.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => { state.tab = b.dataset.tab; render() });
+    const addType = $('[data-add-type]'); if (addType) addType.onchange = () => { const type = addType.value; if (!type) return; addNode(type); addType.value = ''; };
+    const bgPicker = $('[data-canvas-bg]'); if (bgPicker) bgPicker.oninput = () => { state.project.canvasBackground = bgPicker.value; const c = $('.canvas'); if (c) c.style.backgroundColor = bgPicker.value; saveSoon(); };
 
     const c = $('.canvas');
     if (c) {
@@ -439,7 +772,19 @@ function bind() {
                 return;
             }
             if (e.button !== 0) return;
-            if (e.target.closest('[data-menu]') || e.target.closest('.toolbar') || e.target.closest('.select-actions') || e.target.closest('.hint')) return;
+            if (e.target.closest('[data-menu]') || e.target.closest('[data-entity-menu]') || e.target.closest('.toolbar') || e.target.closest('.select-actions') || e.target.closest('[data-image-toggle]')) return;
+            const resize = e.target.closest('[data-resize]');
+            if (resize) {
+                e.preventDefault(); e.stopPropagation();
+                const id = resize.dataset.node, n = state.project.nodes.find(x => x.id === id);
+                if (!n) return;
+                if(n.locked||n.data?.locked){toast('Node is locked');return;}
+                const dir = resize.dataset.resize;
+                state.selected = [id];
+                state.resize = { id, dir, sx: e.clientX, sy: e.clientY, x: n.x, y: n.y, w: n.width, h: n.height };
+                render(); return;
+            }
+            const edgeEl=e.target.closest('[data-edge]'); if(edgeEl){state.selectedEdge=edgeEl.dataset.edge;const ed=state.project.edges.find(x=>x.id===state.selectedEdge);if(ed){state.selected=[ed.source];state.tab='links';}render();return;}
             const port = e.target.closest('[data-port]');
             if (port && port.dataset.port === 'output') {
                 e.preventDefault(); e.stopPropagation();
@@ -463,7 +808,7 @@ function bind() {
                 if (!state.selected.includes(id)) { state.selected = [id]; }
                 state.drag = { id, sx: e.clientX, sy: e.clientY, starts: {} };
                 state.marqueeMoved = false;
-                state.project.nodes.forEach(n => { if (state.selected.includes(n.id)) state.drag.starts[n.id] = { x: n.x, y: n.y } });
+                state.project.nodes.forEach(n=>{if(state.selected.includes(n.id)||state.selected.some(id=>n.parentId===id))state.drag.starts[n.id]={x:n.x,y:n.y}});
                 render(); return;
             }
             const p = screenToWorld(e.clientX, e.clientY);
@@ -480,8 +825,28 @@ function bind() {
         };
     }
 
+    const nodeTypeSelect = $('[data-node-type]');
+    if (nodeTypeSelect) nodeTypeSelect.onchange = () => {
+        const n = selectedNode(); if (!n) return;
+        const next = nodeTypeSelect.value; if (next === n.type) return;
+        const oldType = n.type;
+        const updated = cp(n);
+        updated.type = next;
+        if (next === 'image') {
+            const existing = (updated.data.blocks || []).find(b => b.type === 'image');
+            if (!existing) updated.data.blocks = [...(updated.data.blocks || []), { id: uid('block'), type: 'image', title: 'Image', assetId: state.project.assets[0]?.id || '', url: state.project.assets[0]?.url || '' }];
+            state.tab = 'content';
+        } else if (oldType === 'image') {
+            state.tab = 'details';
+        }
+        commit({ ...state.project, nodes: state.project.nodes.map(x => x.id === n.id ? updated : x) });
+        render();
+        if (next === 'image' && (updated.data.blocks || []).some(b => b.type === 'image' && b.url)) requestAnimationFrame(() => fitNodeToImage(n.id));
+    };
+        document.querySelectorAll('[data-align]').forEach(el=>el.onclick=()=>alignSelected(el.dataset.align));
+document.querySelectorAll('[data-node-lock]').forEach(el=>el.onchange=()=>{const n=selectedNode();if(n){n.locked=el.checked;save();render()}});
     document.querySelectorAll('[data-field]').forEach(el => { const id = state.selected[0]; const handler = () => { if (id) updateNodeFieldLive(id, el.dataset.field, el.value); }; el.oninput = handler; el.onchange = handler; });
-    document.querySelectorAll('[data-block-add]').forEach(b => b.onclick = () => { const n = selectedNode(); if (!n) return; const type = b.dataset.blockAdd; let block = type === 'table' ? { id: uid('block'), type, title: 'Table', headers: ['Key', 'Value'], rows: [['', '']] } : type === 'graph' ? { id: uid('block'), type, title: 'Graph', items: [{ label: 'A', value: 40 }, { label: 'B', value: 65 }, { label: 'C', value: 30 }] } : { id: uid('block'), type, title: 'Image', assetId: state.project.assets[0]?.id || '', url: state.project.assets[0]?.url || '' }; mutate(p => ({ ...p, nodes: p.nodes.map(x => x.id === n.id ? { ...x, data: { ...x.data, blocks: [...(x.data.blocks || []), block] } } : x) })); render(); if (type === 'image' && block.url) requestAnimationFrame(() => fitNodeToImage(n.id)); });
+    document.querySelectorAll('[data-block-add]').forEach(b => b.onclick = () => { const n = selectedNode(); if (!n) return; const type = b.dataset.blockAdd; let block = type === 'heading' ? { id:uid('block'), type, text:'Heading' } : type === 'quote' ? { id:uid('block'), type, text:'Quote' } : type === 'checklist' ? { id:uid('block'), type, title:'Checklist', items:[{text:'New item',done:false}] } : type === 'divider' ? { id:uid('block'), type } : type === 'table' ? { id: uid('block'), type, title: 'Table', headers: ['Key', 'Value'], rows: [['', '']] } : type === 'graph' ? { id: uid('block'), type, title: 'Graph', items: [{ label: 'A', value: 40 }, { label: 'B', value: 65 }, { label: 'C', value: 30 }] } : { id: uid('block'), type, title: 'Image', assetId: state.project.assets[0]?.id || '', url: state.project.assets[0]?.url || '' }; mutate(p => ({ ...p, nodes: p.nodes.map(x => x.id === n.id ? { ...x, data: { ...x.data, blocks: [...(x.data.blocks || []), block] } } : x) })); render(); if (type === 'image' && block.url) requestAnimationFrame(() => fitNodeToImage(n.id)); });
     document.querySelectorAll('[data-b-title]').forEach(el => el.onchange = () => { const n = selectedNode(), i = +el.dataset.bTitle; if (!n) return; mutate(p => ({ ...p, nodes: p.nodes.map(x => x.id === n.id ? { ...x, data: { ...x.data, blocks: (x.data.blocks || []).map((b, j) => j === i ? { ...b, title: el.value } : b) } } : x) })); render() });
     document.querySelectorAll('[data-b-del]').forEach(el => el.onclick = () => { const n = selectedNode(), i = +el.dataset.bDel; if (!n) return; mutate(p => ({ ...p, nodes: p.nodes.map(x => x.id === n.id ? { ...x, data: { ...x.data, blocks: (x.data.blocks || []).filter((_, j) => j !== i) } } : x) })); render() });
     document.querySelectorAll('[data-t-head]').forEach(el => el.onchange = () => { const [i, j] = el.dataset.tHead.split(':').map(Number), n = selectedNode(); mutate(p => ({ ...p, nodes: p.nodes.map(x => { if (x.id !== n.id) return x; const bs = cp(x.data.blocks); bs[i].headers[j] = el.value; return { ...x, data: { ...x.data, blocks: bs } } }) })); render() });
@@ -491,28 +856,69 @@ function bind() {
     document.querySelectorAll('[data-g-value]').forEach(el => el.onchange = () => { const [i, j] = el.dataset.gValue.split(':').map(Number), n = selectedNode(); mutate(p => ({ ...p, nodes: p.nodes.map(x => { if (x.id !== n.id) return x; const bs = cp(x.data.blocks); bs[i].items[j].value = Number(el.value) || 0; return { ...x, data: { ...x.data, blocks: bs } } }) })); render() });
     document.querySelectorAll('[data-g-add]').forEach(el => el.onclick = () => { const i = +el.dataset.gAdd, n = selectedNode(); mutate(p => ({ ...p, nodes: p.nodes.map(x => { if (x.id !== n.id) return x; const bs = cp(x.data.blocks); bs[i].items.push({ label: 'New', value: 20 }); return { ...x, data: { ...x.data, blocks: bs } } }) })); render() });
     document.querySelectorAll('[data-img-select]').forEach(el => el.onchange = () => { const i = +el.dataset.imgSelect, a = state.project.assets.find(x => x.id === el.value), n = selectedNode(); if (!n) return; mutate(p => ({ ...p, nodes: p.nodes.map(x => { if (x.id !== n.id) return x; const bs = cp(x.data.blocks); bs[i].assetId = el.value; bs[i].url = a?.url || ''; return { ...x, data: { ...x.data, blocks: bs } } }) })); render(); if (a?.url) requestAnimationFrame(() => fitNodeToImage(n.id)); });
-    document.querySelectorAll('[data-edge-del]').forEach(el => el.onclick = () => { const id = el.dataset.edgeDel; mutate(p => ({ ...p, edges: p.edges.filter(e => e.id !== id) })); render() });
+    document.querySelectorAll('[data-edge-del]').forEach(el => el.onclick = () => { const id = el.dataset.edgeDel; mutate(p => ({ ...p, edges: p.edges.filter(e => e.id !== id) })); if(state.selectedEdge===id)state.selectedEdge=null; render() });
     const con = $('[data-connect]'); if (con) con.onchange = () => { const n = selectedNode(), id = con.value; if (!n || !id) return; if (state.project.edges.some(e => (e.source === n.id && e.target === id) || (e.source === id && e.target === n.id))) return; mutate(p => ({ ...p, edges: [...p.edges, { id: uid('edge'), source: n.id, target: id, label: 'Linked' }] })); render() };
     document.querySelectorAll('[data-open-node]').forEach(el => el.onclick = () => { state.view = 'canvas'; state.selected = [el.dataset.openNode]; render(); focus() });
-    document.querySelectorAll('[data-asset-del]').forEach(el => el.onclick = () => { const id = el.dataset.assetDel; mutate(p => ({ ...p, assets: p.assets.filter(a => a.id !== id), nodes: p.nodes.map(n => { const d = { ...n.data, blocks: (n.data.blocks || []).map(b => b.assetId === id ? { ...b, assetId: '', url: '' } : b) }; return { ...n, data: d } }) })); render() });
+    document.querySelectorAll('[data-asset-del]').forEach(el => el.onclick = () => deleteAsset(el.dataset.assetDel));
+    document.querySelectorAll('[data-asset-edit]').forEach(el => el.onclick = () => openAssetEditor(el.dataset.assetEdit));
+    document.querySelectorAll('[data-asset-rename]').forEach(el => el.onclick = () => renameAsset(el.dataset.assetRename));
+    document.querySelectorAll('[data-asset-move]').forEach(el => el.onchange = () => moveAsset(el.dataset.assetMove,el.value));
+    document.querySelectorAll('[data-asset-folder]').forEach(el => el.onclick = () => { state.assetFolder=el.dataset.assetFolder; state.assetSearch=''; render(); });
+    document.querySelectorAll('[data-asset-folder-rename]').forEach(el => el.onclick = () => renameAssetFolder(el.dataset.assetFolderRename));
+    document.querySelectorAll('[data-asset-folder-delete]').forEach(el => el.onclick = () => deleteAssetFolder(el.dataset.assetFolderDelete));
+    const as=$('[data-asset-search]'); if(as)as.oninput=()=>{state.assetSearch=as.value;render();requestAnimationFrame(()=>{$('[data-asset-search]')?.focus()})};
+    const afn=$('[data-asset-folder-name]'); if(afn)afn.onchange=()=>{const f=assetFolderObj(state.assetFolder);if(f&&!f.system){f.name=afn.value.trim()||f.name;save();render()}};
+    const aeb=document.querySelector('[data-asset-editor-backdrop]'); if(aeb)aeb.onclick=e=>{if(e.target===aeb)closeAssetEditor()};
+    document.querySelectorAll('[data-editor-field]').forEach(el=>el.oninput=()=>{updateEditorField(el.dataset.editorField,el.value)});
+    document.querySelectorAll('[data-editor-rotate]').forEach(el=>el.onclick=()=>{const e=state.assetEditor;if(!e)return;const v=Number(el.dataset.editorRotate);e.rotate=v===0?0:((e.rotate+v)%360+360)%360;drawAssetEditorPreview();render();requestAnimationFrame(drawAssetEditorPreview)});
+    document.querySelectorAll('[data-editor-flip]').forEach(el=>el.onclick=()=>{const e=state.assetEditor;if(!e)return;if(el.dataset.editorFlip==='x')e.flipX=!e.flipX;else e.flipY=!e.flipY;render();requestAnimationFrame(drawAssetEditorPreview)});
+
     const ds = $('[data-db-search]'); if (ds) ds.oninput = () => { state.dbSearch = ds.value; render() }; const df = $('[data-db-filter]'); if (df) df.onchange = () => { state.dbFilter = df.value; render() };
+    document.querySelectorAll('[data-db-open]').forEach(b=>b.onclick=()=>{state.activeDatabase=b.dataset.dbOpen; state.dbSearch=''; state.dbFilter='all'; render()});
+    const dbName=$('[data-db-name]'); if(dbName) dbName.oninput=()=>renameActiveDatabase(dbName.value);
+    document.querySelectorAll('[data-db-member]').forEach(el=>el.onchange=()=>toggleDatabaseMember(el.dataset.dbMember,el.checked));
+    const infoBackdrop=document.querySelector('[data-info-backdrop]'); if(infoBackdrop) infoBackdrop.onclick=e=>{if(e.target===infoBackdrop) closeInfo()};
     const menu = $('[data-menu]'); if (menu) document.querySelectorAll('[data-create]').forEach(b => b.onclick = () => addNode(b.dataset.create, state.menu.world.x, state.menu.world.y));
+    document.querySelectorAll('[data-entity-create]').forEach(b => b.onclick = () => addNode(b.dataset.entityCreate));
+    document.querySelectorAll('[data-image-toggle]').forEach(el => el.onclick = e => { e.preventDefault(); e.stopPropagation(); const id = el.dataset.imageToggle; const n = state.project.nodes.find(x => x.id === id); if (!n) return; n.data = { ...n.data, imageExpanded: n.data.imageExpanded !== true }; save(); render(); });
+    const imageNodeSelect = $('[data-image-node-select]'); if (imageNodeSelect) imageNodeSelect.onchange = () => { const n = selectedNode(), a = state.project.assets.find(x => x.id === imageNodeSelect.value); if (!n || n.type !== 'image') return; const existing = (n.data.blocks || []).findIndex(b => b.type === 'image'); const block = { id: existing >= 0 ? n.data.blocks[existing].id : uid('block'), type: 'image', title: 'Image', assetId: imageNodeSelect.value, url: a?.url || '' }; const blocks = cp(n.data.blocks || []); if (existing >= 0) blocks[existing] = block; else blocks.push(block); n.data = { ...n.data, blocks, imageExpanded: true }; save(); render(); if (a?.url) requestAnimationFrame(() => fitNodeToImage(n.id)); }
+    document.querySelectorAll('[data-nav-node]').forEach(el=>el.onclick=()=>{state.selected=[el.dataset.navNode];state.view='canvas';render();requestAnimationFrame(focus)});
+    const nsearch=$('[data-nav-search]'); if(nsearch)nsearch.oninput=()=>{state.navSearch=nsearch.value;render();requestAnimationFrame(()=>{$('[data-nav-search]')?.focus()})};
+    const mmp=$('[data-minimap]'); if(mmp){mmp.onpointerdown=e=>{if(e.button!==0)return;e.preventDefault();state.minimapDrag=true;minimapNavigate(e.clientX,e.clientY);mmp.setPointerCapture?.(e.pointerId)};mmp.onpointermove=e=>{if(state.minimapDrag){e.preventDefault();minimapNavigate(e.clientX,e.clientY)}};mmp.onpointerup=e=>{state.minimapDrag=false;mmp.releasePointerCapture?.(e.pointerId)};mmp.onpointercancel=()=>{state.minimapDrag=false};}
+    const csearch=$('[data-command-search]'); if(csearch)csearch.oninput=()=>{state.commandSearch=csearch.value;render();requestAnimationFrame(()=>{$('[data-command-search]')?.focus()})};
+    document.querySelectorAll('[data-type-delete]').forEach(el=>el.onclick=()=>{const id=el.dataset.typeDelete;if(state.project.nodes.some(n=>n.type===id)){toast('Convert or delete nodes using this type first');return}state.project.customTypes=state.project.customTypes.filter(t=>t.id!==id);delete TYPES[id];save();render()});
+    document.querySelectorAll('[data-edge-select]').forEach(el=>el.onclick=()=>{state.selectedEdge=el.dataset.edgeSelect;render()});
+    document.querySelectorAll('[data-edge-field]').forEach(el=>{const fn=()=>{const edge=state.project.edges.find(e=>e.id===el.dataset.edgeId);if(!edge)return;edge[el.dataset.edgeField]=el.value;saveSoon();refreshEdgeOverlay()};el.oninput=fn;el.onchange=fn});
+    const dstatus=$('[data-db-status]'); if(dstatus)dstatus.onchange=()=>{state.dbStatus=dstatus.value;render()};
+    const tsearch=$('[data-timeline-search]'); if(tsearch)tsearch.oninput=()=>{state.timelineSearch=tsearch.value;render()};
+    document.querySelectorAll('[data-tl-title]').forEach(el=>el.oninput=()=>{const e=state.project.timeline.find(x=>x.id===el.dataset.tlTitle);if(e){e.title=el.value;saveSoon()}});
+    document.querySelectorAll('[data-tl-desc]').forEach(el=>el.oninput=()=>{const e=state.project.timeline.find(x=>x.id===el.dataset.tlDesc);if(e){e.description=el.value;saveSoon()}});
+    document.querySelectorAll('[data-tl-year]').forEach(el=>el.oninput=()=>{const e=state.project.timeline.find(x=>x.id===el.dataset.tlYear);if(e){e.year=Number(el.value)||0;saveSoon()}});
+    document.querySelectorAll('[data-tl-node]').forEach(el=>el.onchange=()=>{const e=state.project.timeline.find(x=>x.id===el.dataset.tlNode);if(e){e.nodeId=el.value;save()}});
+    document.querySelectorAll('[data-tl-del]').forEach(el=>el.onclick=()=>deleteTimelineEvent(el.dataset.tlDel));
+    document.querySelectorAll('[data-tl-focus]').forEach(el=>el.onclick=()=>{if(!el.dataset.tlFocus)return;state.view='canvas';state.selected=[el.dataset.tlFocus];render();requestAnimationFrame(focus)});
+    document.querySelectorAll('[data-b-text]').forEach(el=>el.oninput=()=>{const n=selectedNode(),i=+el.dataset.bText;if(!n)return;const bs=cp(n.data.blocks||[]);bs[i].text=el.value;n.data.blocks=bs;saveSoon();renderCanvasOnly()});
+    document.querySelectorAll('[data-b-check-title]').forEach(el=>el.oninput=()=>{const n=selectedNode(),i=+el.dataset.bCheckTitle;if(!n)return;const bs=cp(n.data.blocks||[]);bs[i].title=el.value;n.data.blocks=bs;saveSoon()});
+    document.querySelectorAll('[data-b-check]').forEach(el=>el.onchange=()=>{const n=selectedNode(),parts=el.dataset.bCheck.split(':').map(Number);if(!n)return;const bs=cp(n.data.blocks||[]);bs[parts[0]].items[parts[1]].done=el.checked;n.data.blocks=bs;save();render()});
+    document.querySelectorAll('[data-b-check-text]').forEach(el=>el.oninput=()=>{const n=selectedNode(),parts=el.dataset.bCheckText.split(':').map(Number);if(!n)return;const bs=cp(n.data.blocks||[]);bs[parts[0]].items[parts[1]].text=el.value;n.data.blocks=bs;saveSoon()});
+    document.querySelectorAll('[data-b-check-add]').forEach(el=>el.onclick=()=>{const n=selectedNode(),i=+el.dataset.bCheckAdd;if(!n)return;const bs=cp(n.data.blocks||[]);bs[i].items.push({text:'New item',done:false});n.data.blocks=bs;save();render()});
     document.querySelectorAll('[data-menu-act]').forEach(b => b.onclick = () => { const a = b.dataset.menuAct; if (a === 'select') { if (state.menu.target) state.selected = [state.menu.target]; state.menu = null; render() } else if (a === 'dup') { duplicate(state.menu.target); state.menu = null } else if (a === 'del') { state.selected = [state.menu.target]; state.menu = null; deleteSelected() } else if (a === 'group') makeGroup(); else if (a === 'collection') makeCollection() });
 }
 
 function exportJson() { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(state.project, null, 2)], { type: 'application/json' })); a.download = 'langi-project.json'; a.click(); URL.revokeObjectURL(a.href); toast('Project exported') }
-function importJson(f) { const r = new FileReader(); r.onload = () => { try { const p = JSON.parse(r.result); if (!Array.isArray(p.nodes) || !Array.isArray(p.edges) || !Array.isArray(p.assets)) throw 1; commit({ ...p, collections: Array.isArray(p.collections) ? p.collections : [] }); state.selected = []; state.menu = null; toast('Project imported') } catch (e) { alert('Invalid Langi project file.') } }; r.readAsText(f) }
+function importJson(f) { const r = new FileReader(); r.onload = () => { try { const p = JSON.parse(r.result); if (!Array.isArray(p.nodes) || !Array.isArray(p.edges) || !Array.isArray(p.assets)) throw 1; commit({ ...p, collections: Array.isArray(p.collections) ? p.collections : [] }); ensureDatabaseSchema(); ensureFeatureSchema(); state.selected = []; state.menu = null; toast('Project imported') } catch (e) { alert('Invalid Langi project file.') } }; r.readAsText(f) }
 
-window.addEventListener('pointerdown', e => { if (state.menu && !e.target.closest('[data-menu]')) { state.menu = null; render() } });
+window.addEventListener('pointerdown', e => { if (state.infoModal) return; if (state.menu && !e.target.closest('[data-menu]')) { state.menu = null; render() } else if (state.entityMenu && !e.target.closest('[data-entity-menu]') && !e.target.closest('[data-act="add-menu"]')) { state.entityMenu = false; render() } });
 window.addEventListener('keydown', e => {
     const editing = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName);
-    if (e.key === 'Escape') { state.menu = null; state.marquee = null; state.actions = false; render(); return }
+    if (e.key === 'Escape') { if(state.typeManager){state.typeManager=false;render();return;} if(state.infoModal){closeInfo();return;} state.menu = null; state.entityMenu = false; state.marquee = null; state.actions = false; state.connect = null; state.resize = null; render(); return }
     if (!editing && e.key === ' ') { state.space = true; e.preventDefault() }
     if (editing) return;
     if (e.key === 'Delete' && state.selected.length) deleteSelected();
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); if (state.history.length) { state.future.unshift(cp(state.project)); state.project = state.history.pop(); save(); render() } }
     if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'z') { e.preventDefault(); if (state.future.length) { state.history.push(cp(state.project)); state.project = state.future.shift(); save(); render() } }
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'd' && state.selected.length === 1) { e.preventDefault(); duplicate(state.selected[0]) }
+    if (e.ctrlKey&&e.key.toLowerCase()==='h'&&!editing){e.preventDefault();openInfo('help');return;}
     if (e.shiftKey && e.key.toLowerCase() === 'a') { e.preventDefault(); state.menu = { x: 120, y: 70, type: 'canvas', target: null, world: { x: (300 - state.camera.x) / state.camera.z, y: (150 - state.camera.y) / state.camera.z } }; render() }
 });
 window.addEventListener('keyup', e => { if (e.key === ' ') state.space = false });
@@ -521,6 +927,19 @@ window.addEventListener('resize', () => { renderCanvasOnly(); });
 
 // Centralized pointer movement to survive DOM re-renders and enable smooth dragging
 window.addEventListener('pointermove', e => {
+    if (state.resize) {
+        const r = state.resize, n = state.project.nodes.find(x => x.id === r.id); if (!n) return;
+        const dx = (e.clientX - r.sx) / state.camera.z, dy = (e.clientY - r.sy) / state.camera.z, minW = 180, minH = 110;
+        let x = r.x, y = r.y, w = r.w, h = r.h;
+        if (r.dir.includes('r')) w = Math.max(minW, r.w + dx);
+        if (r.dir.includes('l')) { w = Math.max(minW, r.w - dx); x = r.x + (r.w - w); }
+        if (r.dir.includes('b')) h = Math.max(minH, r.h + dy);
+        if (r.dir.includes('t')) { h = Math.max(minH, r.h - dy); y = r.y + (r.h - h); }
+        n.x = Math.round(snapValue(x)); n.y = Math.round(snapValue(y)); n.width = Math.round(snapValue(w)); n.height = Math.round(snapValue(h));
+        const el = document.querySelector(`[data-node="${n.id}"]`); if (el) { el.style.left=n.x+'px'; el.style.top=n.y+'px'; el.style.width=n.width+'px'; el.style.height=n.height+'px'; }
+        refreshEdgeOverlay();
+        return;
+    }
     if (state.connect) {
         const p = screenToWorld(e.clientX, e.clientY);
         state.connect.mx = p.x; state.connect.my = p.y;
@@ -529,17 +948,17 @@ window.addEventListener('pointermove', e => {
     }
     if (state.pan) { state.camera.x = state.pan.cx + e.clientX - state.pan.sx; state.camera.y = state.pan.cy + e.clientY - state.pan.sy; renderCanvasOnly(); return; }
     if (state.drag) {
+        const dn=state.project.nodes.find(x=>x.id===state.drag.id); if(dn?.locked||dn?.data?.locked)return;
         const dx = (e.clientX - state.drag.sx) / state.camera.z, dy = (e.clientY - state.drag.sy) / state.camera.z;
         if (Math.abs(dx) + Math.abs(dy) > 2) state.marqueeMoved = true;
         state.project.nodes.forEach(n => {
             if (state.drag.starts[n.id]) {
-                n.x = state.drag.starts[n.id].x + dx; n.y = state.drag.starts[n.id].y + dy;
+                n.x = snapValue(state.drag.starts[n.id].x + dx); n.y = snapValue(state.drag.starts[n.id].y + dy);
                 const el = document.querySelector(`[data-node="${n.id}"]`);
                 if (el) { el.style.left = n.x + 'px'; el.style.top = n.y + 'px'; }
             }
         });
-        const w = document.querySelector('.world');
-        if (w) { const svg = w.querySelector('svg'); if (svg) svg.outerHTML = edgesHtml(state.project.edges, state.project.nodes); }
+        refreshEdgeOverlay();
         return;
     }
     if (state.marquee) {
@@ -552,6 +971,9 @@ window.addEventListener('pointermove', e => {
 });
 
 window.addEventListener('pointerup', e => {
+    if (state.resize) {
+        state.history.push(cp(state.project)); if (state.history.length > 50) state.history.shift(); state.future = []; save(); state.resize = null; render(); return;
+    }
     if (state.connect) {
         const hit = document.elementFromPoint(e.clientX, e.clientY);
         const port = hit?.closest('[data-port]');
@@ -562,7 +984,7 @@ window.addEventListener('pointerup', e => {
             state.history.push(cp(state.project));
             if (state.history.length > 50) state.history.shift();
             state.future = [];
-            state.project = { ...state.project, edges: [...state.project.edges, next] };
+            next.color='#28a85d'; next.style='solid'; state.project = { ...state.project, edges: [...state.project.edges, next] }; state.selectedEdge=next.id;
             save();
             toast('Connection created');
         }
@@ -585,7 +1007,7 @@ window.addEventListener('pointerup', e => {
 });
 
 const asset = document.createElement('input'); asset.type = 'file'; asset.id = 'asset-file'; asset.accept = 'image/*'; asset.multiple = true; asset.hidden = true;
-asset.onchange = () => { const fs = [...asset.files]; Promise.all(fs.map(f => new Promise(res => { const r = new FileReader(); r.onload = () => res({ id: uid('asset'), name: f.name, type: 'Image', url: r.result }); r.readAsDataURL(f) }))).then(items => { if (items.length) { mutate(p => ({ ...p, assets: [...p.assets, ...items] })); toast(items.length + ' image' + (items.length > 1 ? 's' : '') + ' added') } }); asset.value = '' };
+asset.onchange = () => { const fs = [...asset.files]; Promise.all(fs.map(f => new Promise(res => { const r = new FileReader(); r.onload = () => { const url=r.result; const img=new Image(); img.onload=()=>res({ id: uid('asset'), name: f.name, type: 'Image', url, width: img.naturalWidth||0, height: img.naturalHeight||0, folderId: state.assetFolder||'root' }); img.src=url; }; r.readAsDataURL(f) }))).then(items => { if (items.length) { mutate(p => ({ ...p, assets: [...p.assets, ...items] })); toast(items.length + ' image' + (items.length > 1 ? 's' : '') + ' added') } }); asset.value = '' };
 document.body.appendChild(asset);
 const jf = document.createElement('input'); jf.type = 'file'; jf.id = 'json-file'; jf.accept = '.json'; jf.hidden = true;
 jf.onchange = () => { if (jf.files[0]) importJson(jf.files[0]); jf.value = '' };
